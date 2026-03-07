@@ -6,6 +6,15 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/auth', 'Auth::index');
-$routes->post('/auth/login', 'Auth::login');
-$routes->post('/auth/register', 'Auth::register');
+
+// Routes group
+$routes -> group('auth', static function($routes) {
+    $routes->get('/', 'Auth::index', ['filter' => 'auth']);
+    $routes->get('logout', 'Auth::logout');
+    $routes->post('login', 'Auth::login');
+    $routes->post('register', 'Auth::register');
+});
+
+$routes -> group('dashboard', static function($routes){
+    $routes->get('/','Dashboard::index', ['filter' => 'auth']);
+});

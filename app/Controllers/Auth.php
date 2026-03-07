@@ -11,7 +11,7 @@ class Auth extends BaseController
     public function __construct()
     {
         $this->userModel = new UserModel();
-        //helper('auth'); // se você tiver helpers de autenticação
+        helper('auth'); // se você tiver helpers de autenticação
     }
 
     public function index(): string {
@@ -40,6 +40,7 @@ class Auth extends BaseController
             session()->set([
                 'user_id'   => $user['user_id'],
                 'user_name' => $user['user_name'],
+                'user_email' => $user['user_email'],
                 'logged_in' => true
             ]);
 
@@ -86,5 +87,14 @@ class Auth extends BaseController
         // 6. Tudo certo! Redireciona para o login com mensagem de sucesso
         session()->setFlashdata('success', 'Conta criada com sucesso! Agora você já pode entrar.');
         return redirect()->to('auth');
+    }
+
+    public function logout()
+    {
+        // 1. Destrói toda a sessão do usuário (apaga o id, nome, email e o status de logado)
+        session()->destroy();
+
+        // 2. Redireciona de volta para a tela de login (ajuste a rota se a sua for diferente)
+        return redirect()->to('/auth'); 
     }
 }
