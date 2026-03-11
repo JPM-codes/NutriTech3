@@ -17,5 +17,6 @@ $routes -> group('auth', static function($routes) {
 
 $routes -> group('dashboard', static function($routes){
     $routes->get('/','Dashboard::index');
+    $routes->get('recipes','Dashboard::recipes');
     $routes->post('updateWater','Dashboard::updateWater');
 });

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 10/03/2026 às 02:34
+-- Tempo de geração: 11/03/2026 às 01:39
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `nutritech`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `description`, `created_by`, `created_at`) VALUES
+(1, 'Café da manhã', 'Receitas perfeitas para começar o dia com energia', 1, '2026-03-09 23:58:01'),
+(2, 'Almoço', 'Refeições completas e nutritivas para o meio do dia', 1, '2026-03-09 23:58:01'),
+(3, 'Jantar', 'Opções leves e saborosas para a noite', 1, '2026-03-09 23:58:01'),
+(4, 'Lanche', 'Snacks rápidos e saudáveis para qualquer hora', 1, '2026-03-09 23:58:01');
 
 -- --------------------------------------------------------
 
@@ -158,38 +182,24 @@ CREATE TABLE `meals` (
 --
 
 CREATE TABLE `recipes` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `description` text DEFAULT NULL,
-  `created_by` int(10) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `recipes`
---
-
-INSERT INTO `recipes` (`id`, `name`, `description`, `created_by`, `created_at`) VALUES
-(5, 'Frango com Arroz', 'Prato simples com arroz branco e frango grelhado', 1, '2026-03-10 01:30:02'),
-(6, 'Macarrão com Carne', 'Macarrão com carne bovina', 1, '2026-03-10 01:30:02'),
-(7, 'Aveia com Banana', 'Aveia misturada com banana', 1, '2026-03-10 01:30:02'),
-(8, 'Salada Fitness', 'Salada de alface, tomate e frango', 1, '2026-03-10 01:30:02'),
-(9, 'Frango com Arroz', 'Prato simples com arroz branco e frango grelhado', 1, '2026-03-10 01:30:16'),
-(10, 'Macarrão com Carne', 'Macarrão com carne bovina', 1, '2026-03-10 01:30:16'),
-(11, 'Aveia com Banana', 'Aveia misturada com banana', 1, '2026-03-10 01:30:16'),
-(12, 'Salada Fitness', 'Salada de alface, tomate e frango', 1, '2026-03-10 01:30:16');
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `recipe_foods`
---
-
-CREATE TABLE `recipe_foods` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `recipe_id` int(10) UNSIGNED NOT NULL,
-  `food_id` int(10) UNSIGNED NOT NULL,
-  `quantity` decimal(6,2) DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `ingredientes` text NOT NULL,
+  `modo_preparo` text NOT NULL,
+  `tempo_reparo` int(11) DEFAULT 0,
+  `unidades` int(11) DEFAULT 0,
+  `porcoes` int(11) DEFAULT 0,
+  `regras` text DEFAULT NULL,
+  `restricao_alimentar` varchar(255) DEFAULT NULL,
+  `dificuldade` varchar(50) DEFAULT 'Fácil',
+  `category_id` int(11) DEFAULT NULL,
+  `combinacao_id` int(11) DEFAULT NULL,
+  `imagem` varchar(255) DEFAULT NULL,
+  `video` varchar(255) DEFAULT NULL,
+  `calorias` int(11) DEFAULT 0,
+  `proteina` decimal(5,2) DEFAULT 0.00,
+  `carboidratos` decimal(5,2) DEFAULT 0.00,
+  `gordura` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -235,11 +245,18 @@ CREATE TABLE `water_logs` (
 --
 
 INSERT INTO `water_logs` (`id`, `user_id`, `glasses`, `log_date`, `created_at`) VALUES
-(5, 2, 5, '2026-03-10', '2026-03-10 01:02:03');
+(5, 2, 5, '2026-03-10', '2026-03-10 01:02:03'),
+(6, 1, 1, '2026-03-10', '2026-03-10 01:51:50');
 
 --
 -- Índices para tabelas despejadas
 --
+
+--
+-- Índices de tabela `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `foods`
@@ -260,15 +277,7 @@ ALTER TABLE `meals`
 --
 ALTER TABLE `recipes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_recipe_user` (`created_by`);
-
---
--- Índices de tabela `recipe_foods`
---
-ALTER TABLE `recipe_foods`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_recipe_food` (`recipe_id`),
-  ADD KEY `fk_food_recipe` (`food_id`);
+  ADD KEY `fk_recipe_category` (`category_id`);
 
 --
 -- Índices de tabela `users`
@@ -289,6 +298,12 @@ ALTER TABLE `water_logs`
 --
 
 --
+-- AUTO_INCREMENT de tabela `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT de tabela `foods`
 --
 ALTER TABLE `foods`
@@ -304,13 +319,7 @@ ALTER TABLE `meals`
 -- AUTO_INCREMENT de tabela `recipes`
 --
 ALTER TABLE `recipes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT de tabela `recipe_foods`
---
-ALTER TABLE `recipe_foods`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `users`
@@ -322,7 +331,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de tabela `water_logs`
 --
 ALTER TABLE `water_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restrições para tabelas despejadas
@@ -339,14 +348,7 @@ ALTER TABLE `meals`
 -- Restrições para tabelas `recipes`
 --
 ALTER TABLE `recipes`
-  ADD CONSTRAINT `fk_recipe_user` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
-
---
--- Restrições para tabelas `recipe_foods`
---
-ALTER TABLE `recipe_foods`
-  ADD CONSTRAINT `fk_food_recipe` FOREIGN KEY (`food_id`) REFERENCES `foods` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_recipe_food` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_recipe_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL;
 
 --
 -- Restrições para tabelas `water_logs`
