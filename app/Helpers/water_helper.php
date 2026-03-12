@@ -1,27 +1,26 @@
 <?php
 
-if (!function_exists('today_water')) {
+if (!function_exists('agua_hoje')) {
 
-    function today_water($userId)
+    function agua_hoje($usuarioId)
     {
         $db = \Config\Database::connect();
 
-        $result = $db->table('water_logs')
-            ->select('glasses')
-            ->where('user_id', $userId)
-            ->where('log_date', date('Y-m-d'))
+        $result = $db->table('controle_agua')
+            ->selectSum('quantidade_ml', 'total')
+            ->where('usuario_id', $usuarioId)
+            ->where('data_registro', date('Y-m-d'))
             ->get()
             ->getRowArray();
 
-        return $result['glasses'] ?? 0;
+        return $result['total'] ?? 0;
     }
 }
 
+if (!function_exists('percentual_agua')) {
 
-if (!function_exists('water_percentage')) {
-
-    function water_percentage($glasses, $goal = 8)
+    function percentual_agua($ml, $meta = 2000)
     {
-        return min(100, round(($glasses / $goal) * 100));
+        return min(100, round(($ml / $meta) * 100));
     }
 }

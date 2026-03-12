@@ -1,12 +1,12 @@
 <?php
 $userId = session('user_id');
 
-$macros = today_macros($userId);
-$goals = macro_goals($userId);
-$goal = daily_calorie_goal($userId);
-$consumed = today_calories($userId);
-$remaining = calories_remaining($userId);
-$percentage = calorie_percentage($userId);
+$macros = macros_hoje($userId);
+$goals = metas_macros($userId);
+$goal = meta_calorias_diaria($userId);
+$consumed = calorias_hoje($userId);
+$remaining = calorias_restantes($userId);
+$percentage = percentual_calorias($userId);
 
 $circumference = 2 * pi() * 52;
 $offset = $circumference * (1 - ($percentage / 100));
@@ -56,11 +56,11 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Meta diária</span>
-                                <span class="font-medium"><?= format_number($goal) ?> kcal</span>
+                                <span class="font-medium"><?= formatar_numero($goal) ?> kcal</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Consumido</span>
-                                <span class="font-medium text-primary"><?= format_number($consumed) ?> kcal</span>
+                                <span class="font-medium text-primary"><?= formatar_numero($consumed) ?> kcal</span>
                             </div>
                         </div>
                     </div>
@@ -94,11 +94,11 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center"><span class="text-sm">🥩</span></div>
                         <span class="text-sm font-medium text-gray-700">Proteína</span>
                     </div>
-                    <p class="text-xl font-bold text-gray-800"><?= $macros['protein'] ?>g</p>
-                    <p class="text-xs text-gray-500 mt-1"><?= $goals['protein'] ?>g meta</p>
+                    <p class="text-xl font-bold text-gray-800"><?= $macros['proteinas'] ?>g</p>
+                    <p class="text-xs text-gray-500 mt-1"><?= $goals['proteinas'] ?>g meta</p>
 
                     <div class="h-full bg-red-400 rounded-full macro-bar"
-                    style="width: <?= macro_percentage($macros['protein'], $goals['protein']) ?>%">
+                        style="width: <?= percentual_macro($macros['proteinas'], $goals['proteinas']) ?>%">
                     </div>
 
                 </div>
@@ -107,11 +107,11 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center"><span class="text-sm">🍞</span></div>
                         <span class="text-sm font-medium text-gray-700">Carbos</span>
                     </div>
-                    <p class="text-xl font-bold text-gray-800"><?= $macros['carbs'] ?>g</p>
-                    <p class="text-xs text-gray-500 mt-1"><?= $goals['carbs'] ?>g meta</p>
+                    <p class="text-xl font-bold text-gray-800"><?= $macros['carboidratos'] ?>g</p>
+                    <p class="text-xs text-gray-500 mt-1"><?= $goals['carboidratos'] ?>g meta</p>
 
                     <div class="h-full bg-amber-400 rounded-full macro-bar"
-                    style="width: <?= macro_percentage($macros['carbs'], $goals['carbs']) ?>%">
+                        style="width: <?= percentual_macro($macros['carboidratos'], $goals['carboidratos']) ?>%">
                     </div>
 
                 </div>
@@ -120,11 +120,11 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><span class="text-sm">🥑</span></div>
                         <span class="text-sm font-medium text-gray-700">Gordura</span>
                     </div>
-                    <p class="text-xl font-bold text-gray-800"><?= $macros['fat'] ?>g</p>
-                    <p class="text-xs text-gray-500 mt-1"><?= $goals['fat'] ?>g meta</p>
+                    <p class="text-xl font-bold text-gray-800"><?= $macros['gorduras'] ?>g</p>
+                    <p class="text-xs text-gray-500 mt-1"><?= $goals['gorduras'] ?>g meta</p>
 
                     <div class="h-full bg-blue-400 rounded-full macro-bar"
-                    style="width: <?= macro_percentage($macros['fat'], $goals['fat']) ?>%">
+                        style="width: <?= percentual_macro($macros['gorduras'], $goals['gorduras']) ?>%">
                     </div>
 
                 </div>
@@ -144,8 +144,7 @@ $offset = $circumference * (1 - ($percentage / 100));
                     <?php for ($i = 1; $i <= 8; $i++): ?>
                         <button
                             class="water-drop text-3xl transition-all <?= $i <= $water ? 'filled' : '' ?>"
-                            onclick="updateWater(<?= $i ?>)"
-                        >
+                            onclick="updateWater(<?= $i ?>)">
                             💧
                         </button>
                     <?php endfor; ?>
@@ -157,10 +156,10 @@ $offset = $circumference * (1 - ($percentage / 100));
             <div class="space-y-3">
                 <h3 class="font-semibold text-gray-800">Refeições de Hoje</h3>
 
-                <?= renderMealSection('breakfast', '☀️ Café da Manhã', $todayData['meals']['breakfast']) ?>
-                <?= renderMealSection('lunch', '🍽️ Almoço', $todayData['meals']['lunch']) ?>
-                <?= renderMealSection('dinner', '🌙 Jantar', $todayData['meals']['dinner']) ?>
-                <?= renderMealSection('snack', '🍎 Lanches', $todayData['meals']['snack']) ?>
+                <?= renderizar_secao_refeicao('breakfast', '☀️ Café da Manhã', $todayData['meals']['breakfast']) ?>
+                <?= renderizar_secao_refeicao('lunch', '🍽️ Almoço', $todayData['meals']['lunch']) ?>
+                <?= renderizar_secao_refeicao('dinner', '🌙 Jantar', $todayData['meals']['dinner']) ?>
+                <?= renderizar_secao_refeicao('snack', '🍎 Lanches', $todayData['meals']['snack']) ?>
 
             </div>
 
@@ -273,7 +272,7 @@ $offset = $circumference * (1 - ($percentage / 100));
 </div>
 
 <script src="<?= base_url('assets/js/main.js') ?>"></script>
-<script src="<?=  base_url('assets/js/dashboard.js') ?>"></script>
+<script src="<?= base_url('assets/js/dashboard.js') ?>"></script>
 <script src="base_url('assets/js/recipes.js')"></script>
 <script src="base_url('assets/js/profile.js')"></script>
 </body>

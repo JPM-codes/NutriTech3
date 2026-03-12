@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 11/03/2026 às 01:39
+-- Tempo de geração: 12/03/2026 às 01:18
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -24,362 +24,286 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `categories`
+-- Estrutura para tabela `alimentos`
 --
 
-CREATE TABLE `categories` (
+CREATE TABLE `alimentos` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `created_by` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `categories`
---
-
-INSERT INTO `categories` (`id`, `name`, `description`, `created_by`, `created_at`) VALUES
-(1, 'Café da manhã', 'Receitas perfeitas para começar o dia com energia', 1, '2026-03-09 23:58:01'),
-(2, 'Almoço', 'Refeições completas e nutritivas para o meio do dia', 1, '2026-03-09 23:58:01'),
-(3, 'Jantar', 'Opções leves e saborosas para a noite', 1, '2026-03-09 23:58:01'),
-(4, 'Lanche', 'Snacks rápidos e saudáveis para qualquer hora', 1, '2026-03-09 23:58:01');
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `foods`
---
-
-CREATE TABLE `foods` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `calories` int(11) NOT NULL,
-  `protein` decimal(6,2) DEFAULT 0.00,
-  `carbs` decimal(6,2) DEFAULT 0.00,
-  `fat` decimal(6,2) DEFAULT 0.00,
-  `serving_size` varchar(50) DEFAULT NULL,
-  `serving_weight` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `foods`
---
-
-INSERT INTO `foods` (`id`, `name`, `calories`, `protein`, `carbs`, `fat`, `serving_size`, `serving_weight`, `created_at`) VALUES
-(1, 'Arroz branco cozido', 130, 2.40, 28.00, 0.30, '100g', 100, '2026-03-10 01:27:31'),
-(2, 'Feijão carioca cozido', 76, 4.80, 13.60, 0.50, '100g', 100, '2026-03-10 01:27:31'),
-(3, 'Peito de frango grelhado', 165, 31.00, 0.00, 3.60, '100g', 100, '2026-03-10 01:27:31'),
-(4, 'Carne bovina magra', 250, 26.00, 0.00, 15.00, '100g', 100, '2026-03-10 01:27:31'),
-(5, 'Ovo cozido', 155, 13.00, 1.10, 11.00, '100g', 100, '2026-03-10 01:27:31'),
-(6, 'Pão francês', 270, 9.00, 57.00, 3.20, '100g', 100, '2026-03-10 01:27:31'),
-(7, 'Leite integral', 61, 3.20, 4.80, 3.30, '100g', 100, '2026-03-10 01:27:31'),
-(8, 'Queijo muçarela', 280, 22.00, 3.00, 22.00, '100g', 100, '2026-03-10 01:27:31'),
-(9, 'Banana', 89, 1.10, 23.00, 0.30, '100g', 100, '2026-03-10 01:27:31'),
-(10, 'Maçã', 52, 0.30, 14.00, 0.20, '100g', 100, '2026-03-10 01:27:31'),
-(11, 'Aveia', 389, 17.00, 66.00, 7.00, '100g', 100, '2026-03-10 01:27:31'),
-(12, 'Batata cozida', 87, 1.90, 20.00, 0.10, '100g', 100, '2026-03-10 01:27:31'),
-(13, 'Batata doce', 90, 2.00, 21.00, 0.10, '100g', 100, '2026-03-10 01:27:31'),
-(14, 'Macarrão cozido', 131, 5.00, 25.00, 1.10, '100g', 100, '2026-03-10 01:27:31'),
-(15, 'Atum em lata', 132, 28.00, 0.00, 1.00, '100g', 100, '2026-03-10 01:27:31'),
-(16, 'Salmão grelhado', 208, 20.00, 0.00, 13.00, '100g', 100, '2026-03-10 01:27:31'),
-(17, 'Iogurte natural', 59, 10.00, 3.60, 0.40, '100g', 100, '2026-03-10 01:27:31'),
-(18, 'Amendoim', 567, 26.00, 16.00, 49.00, '100g', 100, '2026-03-10 01:27:31'),
-(19, 'Castanha do pará', 659, 14.00, 12.00, 67.00, '100g', 100, '2026-03-10 01:27:31'),
-(20, 'Brócolis', 34, 2.80, 7.00, 0.40, '100g', 100, '2026-03-10 01:27:31'),
-(21, 'Cenoura', 41, 0.90, 10.00, 0.20, '100g', 100, '2026-03-10 01:27:31'),
-(22, 'Tomate', 18, 0.90, 3.90, 0.20, '100g', 100, '2026-03-10 01:27:31'),
-(23, 'Alface', 15, 1.40, 2.90, 0.20, '100g', 100, '2026-03-10 01:27:31'),
-(24, 'Abacate', 160, 2.00, 9.00, 15.00, '100g', 100, '2026-03-10 01:27:31'),
-(25, 'Chocolate meio amargo', 546, 4.90, 61.00, 31.00, '100g', 100, '2026-03-10 01:27:31'),
-(26, 'Mel', 304, 0.30, 82.00, 0.00, '100g', 100, '2026-03-10 01:27:31'),
-(27, 'Granola', 471, 10.00, 64.00, 20.00, '100g', 100, '2026-03-10 01:27:31'),
-(28, 'Arroz integral', 111, 2.60, 23.00, 0.90, '100g', 100, '2026-03-10 01:27:31'),
-(29, 'Lentilha cozida', 116, 9.00, 20.00, 0.40, '100g', 100, '2026-03-10 01:27:31'),
-(30, 'Grão de bico cozido', 164, 9.00, 27.00, 2.60, '100g', 100, '2026-03-10 01:27:31'),
-(31, 'Arroz branco cozido', 130, 2.40, 28.00, 0.30, '100g', 100, '2026-03-10 01:30:02'),
-(32, 'Feijão carioca cozido', 76, 4.80, 13.60, 0.50, '100g', 100, '2026-03-10 01:30:02'),
-(33, 'Peito de frango grelhado', 165, 31.00, 0.00, 3.60, '100g', 100, '2026-03-10 01:30:02'),
-(34, 'Carne bovina magra', 250, 26.00, 0.00, 15.00, '100g', 100, '2026-03-10 01:30:02'),
-(35, 'Ovo cozido', 155, 13.00, 1.10, 11.00, '100g', 100, '2026-03-10 01:30:02'),
-(36, 'Pão francês', 270, 9.00, 57.00, 3.20, '100g', 100, '2026-03-10 01:30:02'),
-(37, 'Leite integral', 61, 3.20, 4.80, 3.30, '100g', 100, '2026-03-10 01:30:02'),
-(38, 'Queijo muçarela', 280, 22.00, 3.00, 22.00, '100g', 100, '2026-03-10 01:30:02'),
-(39, 'Banana', 89, 1.10, 23.00, 0.30, '100g', 100, '2026-03-10 01:30:02'),
-(40, 'Maçã', 52, 0.30, 14.00, 0.20, '100g', 100, '2026-03-10 01:30:02'),
-(41, 'Aveia', 389, 17.00, 66.00, 7.00, '100g', 100, '2026-03-10 01:30:02'),
-(42, 'Batata cozida', 87, 1.90, 20.00, 0.10, '100g', 100, '2026-03-10 01:30:02'),
-(43, 'Batata doce', 90, 2.00, 21.00, 0.10, '100g', 100, '2026-03-10 01:30:02'),
-(44, 'Macarrão cozido', 131, 5.00, 25.00, 1.10, '100g', 100, '2026-03-10 01:30:02'),
-(45, 'Atum em lata', 132, 28.00, 0.00, 1.00, '100g', 100, '2026-03-10 01:30:02'),
-(46, 'Salmão grelhado', 208, 20.00, 0.00, 13.00, '100g', 100, '2026-03-10 01:30:02'),
-(47, 'Iogurte natural', 59, 10.00, 3.60, 0.40, '100g', 100, '2026-03-10 01:30:02'),
-(48, 'Amendoim', 567, 26.00, 16.00, 49.00, '100g', 100, '2026-03-10 01:30:02'),
-(49, 'Castanha do pará', 659, 14.00, 12.00, 67.00, '100g', 100, '2026-03-10 01:30:02'),
-(50, 'Brócolis', 34, 2.80, 7.00, 0.40, '100g', 100, '2026-03-10 01:30:02'),
-(51, 'Cenoura', 41, 0.90, 10.00, 0.20, '100g', 100, '2026-03-10 01:30:02'),
-(52, 'Tomate', 18, 0.90, 3.90, 0.20, '100g', 100, '2026-03-10 01:30:02'),
-(53, 'Alface', 15, 1.40, 2.90, 0.20, '100g', 100, '2026-03-10 01:30:02'),
-(54, 'Abacate', 160, 2.00, 9.00, 15.00, '100g', 100, '2026-03-10 01:30:02'),
-(55, 'Chocolate meio amargo', 546, 4.90, 61.00, 31.00, '100g', 100, '2026-03-10 01:30:02'),
-(56, 'Mel', 304, 0.30, 82.00, 0.00, '100g', 100, '2026-03-10 01:30:02'),
-(57, 'Granola', 471, 10.00, 64.00, 20.00, '100g', 100, '2026-03-10 01:30:02'),
-(58, 'Arroz integral', 111, 2.60, 23.00, 0.90, '100g', 100, '2026-03-10 01:30:02'),
-(59, 'Lentilha cozida', 116, 9.00, 20.00, 0.40, '100g', 100, '2026-03-10 01:30:02'),
-(60, 'Grão de bico cozido', 164, 9.00, 27.00, 2.60, '100g', 100, '2026-03-10 01:30:02'),
-(61, 'Arroz branco cozido', 130, 2.40, 28.00, 0.30, '100g', 100, '2026-03-10 01:30:16'),
-(62, 'Feijão carioca cozido', 76, 4.80, 13.60, 0.50, '100g', 100, '2026-03-10 01:30:16'),
-(63, 'Peito de frango grelhado', 165, 31.00, 0.00, 3.60, '100g', 100, '2026-03-10 01:30:16'),
-(64, 'Carne bovina magra', 250, 26.00, 0.00, 15.00, '100g', 100, '2026-03-10 01:30:16'),
-(65, 'Ovo cozido', 155, 13.00, 1.10, 11.00, '100g', 100, '2026-03-10 01:30:16'),
-(66, 'Pão francês', 270, 9.00, 57.00, 3.20, '100g', 100, '2026-03-10 01:30:16'),
-(67, 'Leite integral', 61, 3.20, 4.80, 3.30, '100g', 100, '2026-03-10 01:30:16'),
-(68, 'Queijo muçarela', 280, 22.00, 3.00, 22.00, '100g', 100, '2026-03-10 01:30:16'),
-(69, 'Banana', 89, 1.10, 23.00, 0.30, '100g', 100, '2026-03-10 01:30:16'),
-(70, 'Maçã', 52, 0.30, 14.00, 0.20, '100g', 100, '2026-03-10 01:30:16'),
-(71, 'Aveia', 389, 17.00, 66.00, 7.00, '100g', 100, '2026-03-10 01:30:16'),
-(72, 'Batata cozida', 87, 1.90, 20.00, 0.10, '100g', 100, '2026-03-10 01:30:16'),
-(73, 'Batata doce', 90, 2.00, 21.00, 0.10, '100g', 100, '2026-03-10 01:30:16'),
-(74, 'Macarrão cozido', 131, 5.00, 25.00, 1.10, '100g', 100, '2026-03-10 01:30:16'),
-(75, 'Atum em lata', 132, 28.00, 0.00, 1.00, '100g', 100, '2026-03-10 01:30:16'),
-(76, 'Salmão grelhado', 208, 20.00, 0.00, 13.00, '100g', 100, '2026-03-10 01:30:16'),
-(77, 'Iogurte natural', 59, 10.00, 3.60, 0.40, '100g', 100, '2026-03-10 01:30:16'),
-(78, 'Amendoim', 567, 26.00, 16.00, 49.00, '100g', 100, '2026-03-10 01:30:16'),
-(79, 'Castanha do pará', 659, 14.00, 12.00, 67.00, '100g', 100, '2026-03-10 01:30:16'),
-(80, 'Brócolis', 34, 2.80, 7.00, 0.40, '100g', 100, '2026-03-10 01:30:16'),
-(81, 'Cenoura', 41, 0.90, 10.00, 0.20, '100g', 100, '2026-03-10 01:30:16'),
-(82, 'Tomate', 18, 0.90, 3.90, 0.20, '100g', 100, '2026-03-10 01:30:16'),
-(83, 'Alface', 15, 1.40, 2.90, 0.20, '100g', 100, '2026-03-10 01:30:16'),
-(84, 'Abacate', 160, 2.00, 9.00, 15.00, '100g', 100, '2026-03-10 01:30:16'),
-(85, 'Chocolate meio amargo', 546, 4.90, 61.00, 31.00, '100g', 100, '2026-03-10 01:30:16'),
-(86, 'Mel', 304, 0.30, 82.00, 0.00, '100g', 100, '2026-03-10 01:30:16'),
-(87, 'Granola', 471, 10.00, 64.00, 20.00, '100g', 100, '2026-03-10 01:30:16'),
-(88, 'Arroz integral', 111, 2.60, 23.00, 0.90, '100g', 100, '2026-03-10 01:30:16'),
-(89, 'Lentilha cozida', 116, 9.00, 20.00, 0.40, '100g', 100, '2026-03-10 01:30:16'),
-(90, 'Grão de bico cozido', 164, 9.00, 27.00, 2.60, '100g', 100, '2026-03-10 01:30:16');
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `meals`
---
-
-CREATE TABLE `meals` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `food_id` int(10) UNSIGNED NOT NULL,
-  `meal_type` enum('breakfast','lunch','dinner','snack') NOT NULL,
-  `quantity` decimal(6,2) DEFAULT 1.00,
-  `meal_date` date NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `nome` varchar(120) NOT NULL,
+  `calorias` int(11) DEFAULT NULL,
+  `proteinas` decimal(6,2) DEFAULT NULL,
+  `carboidratos` decimal(6,2) DEFAULT NULL,
+  `gorduras` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `recipes`
+-- Estrutura para tabela `controle_agua`
 --
 
-CREATE TABLE `recipes` (
+CREATE TABLE `controle_agua` (
   `id` int(11) NOT NULL,
-  `nome` varchar(255) NOT NULL,
-  `ingredientes` text NOT NULL,
-  `modo_preparo` text NOT NULL,
-  `tempo_preparo` int(11) DEFAULT 0,
-  `regras` text DEFAULT NULL,
-  `dificuldade` varchar(50) DEFAULT 'Fácil',
-  `category_id` int(11) DEFAULT NULL,
-  `combinacao_id` int(11) DEFAULT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `quantidade_ml` int(11) DEFAULT NULL,
+  `data_registro` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `controle_agua`
+--
+
+INSERT INTO `controle_agua` (`id`, `usuario_id`, `quantidade_ml`, `data_registro`) VALUES
+(1, 1, 7, '2026-03-11');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `progresso_usuario`
+--
+
+CREATE TABLE `progresso_usuario` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `peso` decimal(5,2) DEFAULT NULL,
+  `gordura_corporal` decimal(5,2) DEFAULT NULL,
+  `data_registro` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `receitas`
+--
+
+CREATE TABLE `receitas` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(150) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `categoria` varchar(100) DEFAULT NULL,
+  `tempo_preparo` int(11) DEFAULT NULL,
+  `porcoes` int(11) NOT NULL,
   `imagem` varchar(255) DEFAULT NULL,
-  `calorias` int(11) DEFAULT 0,
-  `proteina` decimal(5,2) DEFAULT 0.00,
-  `carboidratos` decimal(5,2) DEFAULT 0.00,
-  `gordura` decimal(5,2) DEFAULT 0.00
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-INSERT INTO `recipes` (`id`, `nome`, `ingredientes`, `modo_preparo`, `tempo_preparo`, `regras`, `dificuldade`, `category_id`, `combinacao_id`, `imagem`, `calorias`, `proteina`, `carboidratos`, `gordura`) VALUES
--- CAFÉ DA MANHÃ (category_id = 1)
-(1, 'Panqueca de Banana Fit', '1 banana madura, 2 ovos, 2 colheres de sopa de aveia.', 'Amasse a banana, misture com os ovos e a aveia. Doure os dois lados em uma frigideira antiaderente.', 10, 'Sem lactose', 'Fácil', 1, NULL, NULL, 280, 14.00, 35.00, 10.00),
-(2, 'Ovos Mexidos com Espinafre', '2 ovos, 1 xícara de espinafre, sal a gosto.', 'Refogue o espinafre levemente, adicione os ovos batidos e mexa até cozinhar.', 5, 'Low carb', 'Fácil', 1, NULL, NULL, 150, 13.00, 2.00, 10.00),
-(3, 'Aveia Adormecida (Overnight Oats)', '3 colheres de aveia, 1/2 xícara de leite desnatado, 1 colher de chia, frutas picadas.', 'Misture a aveia, o leite e a chia. Deixe na geladeira durante a noite. Adicione frutas de manhã.', 5, 'Vegetariano', 'Fácil', 1, NULL, NULL, 220, 9.00, 38.00, 4.00),
-(4, 'Tapioca de Queijo Branco', '3 colheres de goma de tapioca, 1 fatia grossa de queijo branco.', 'Espalhe a goma na frigideira. Quando unir, vire, adicione o queijo, dobre e espere derreter.', 5, 'Sem glúten', 'Fácil', 1, NULL, NULL, 210, 8.00, 35.00, 5.00),
-(5, 'Vitamina de Mamão com Linhaça', '1 fatia de mamão, 200ml de leite, 1 colher de linhaça triturada.', 'Bata todos os ingredientes no liquidificador e sirva gelado.', 5, 'Rico em fibras', 'Fácil', 1, NULL, NULL, 160, 7.00, 22.00, 5.00),
-
--- ALMOÇO (category_id = 2)
-(6, 'Frango Grelhado com Batata Doce', '150g de peito de frango, 100g de batata doce cozida, temperos a gosto.', 'Grelhe o frango temperado e sirva com a batata doce cozida em rodelas.', 20, 'Alto teor proteico', 'Fácil', 2, NULL, NULL, 320, 35.00, 25.00, 6.00),
-(7, 'Salada de Quinoa com Legumes', '1/2 xícara de quinoa cozida, tomate, cenoura ralada, pepino, azeite.', 'Misture a quinoa já cozida com os vegetais picados e tempere com azeite e sal.', 15, 'Vegano', 'Fácil', 2, NULL, NULL, 250, 8.00, 35.00, 9.00),
-(8, 'Estrogonofe Saudável', '150g de frango em cubos, 3 colheres de molho de tomate, 2 colheres de iogurte natural.', 'Doure o frango, adicione o molho e desligue o fogo. Misture o iogurte natural para dar cremosidade.', 20, 'Baixa caloria', 'Média', 2, NULL, NULL, 290, 36.00, 10.00, 11.00),
-(9, 'Filé de Peixe Assado com Brócolis', '1 filé de tilápia, 1 xícara de brócolis, azeite, limão.', 'Tempere o peixe com limão e sal. Asse no forno junto com o brócolis por 20 minutos.', 25, 'Rico em ômega 3', 'Fácil', 2, NULL, NULL, 210, 28.00, 8.00, 7.00),
-(10, 'Macarrão Integral ao Sugo', '100g de macarrão integral, molho de tomate caseiro, manjericão.', 'Cozinhe o macarrão. Aqueça o molho com manjericão fresco e misture.', 15, 'Energético', 'Fácil', 2, NULL, NULL, 310, 12.00, 60.00, 2.00),
-
--- JANTAR (category_id = 3)
-(11, 'Sopa Creme de Abóbora', '200g de abóbora, 1/2 cebola, gengibre ralado, água.', 'Cozinhe a abóbora com cebola. Bata no liquidificador com a água do cozimento e gengibre.', 30, 'Low carb', 'Média', 3, NULL, NULL, 120, 3.00, 25.00, 1.00),
-(12, 'Omelete de Forno', '3 ovos, legumes variados picados (cenoura, abobrinha), cheiro verde.', 'Bata os ovos, misture os legumes e asse em um refratário por 15 minutos.', 20, 'Rico em proteínas', 'Fácil', 3, NULL, NULL, 230, 18.00, 5.00, 15.00),
-(13, 'Wrap de Frango com Alface', '1 pão folha (rap10), 2 colheres de frango desfiado, folhas de alface.', 'Aqueça a massa, coloque o frango, a alface, enrole e sirva.', 10, 'Lanche rápido', 'Fácil', 3, NULL, NULL, 200, 15.00, 22.00, 5.00),
-(14, 'Berinjela Recheada', '1/2 berinjela, 100g de carne moída magra, molho de tomate.', 'Retire o miolo da berinjela, recheie com a carne refogada no molho e asse.', 35, 'Low carb', 'Média', 3, NULL, NULL, 260, 25.00, 12.00, 12.00),
-(15, 'Salada Caprese com Rúcula', 'Folhas de rúcula, 1 tomate em rodelas, 3 fatias de mussarela de búfala, azeite.', 'Disponha a rúcula, intercale tomate e queijo e regue com azeite.', 10, 'Vegetariano', 'Fácil', 3, NULL, NULL, 240, 14.00, 5.00, 18.00),
-
--- LANCHE (category_id = 4)
-(16, 'Iogurte com Frutas Vermelhas', '1 potinho de iogurte natural, 1 colher de morangos e mirtilos picados.', 'Basta misturar as frutas no iogurte e consumir.', 2, 'Rico em probióticos', 'Fácil', 4, NULL, NULL, 110, 7.00, 15.00, 3.00),
-(17, 'Mix de Castanhas', '3 castanhas do pará, 5 amêndoas, 2 nozes.', 'Misture e consuma. Cuidado com as porções.', 1, 'Gorduras boas', 'Fácil', 4, NULL, NULL, 180, 4.00, 6.00, 16.00),
-(18, 'Smoothie Verde Detox', '1 folha de couve, 1/2 maçã, lascas de gengibre, 150ml de água de coco.', 'Bata tudo no liquidificador até ficar homogêneo e beba sem coar.', 5, 'Detox', 'Fácil', 4, NULL, NULL, 80, 1.00, 18.00, 0.00),
-(19, 'Chips de Batata Doce', '1/2 batata doce fatiada bem fina, fio de azeite, sal.', 'Tempere as fatias, espalhe em uma forma e asse até ficarem crocantes.', 30, 'Snack saudável', 'Média', 4, NULL, NULL, 140, 2.00, 25.00, 4.00),
-(20, 'Biscoito de Aveia Caseiro', '1 xícara de aveia, 2 colheres de mel, 1 colher de pasta de amendoim.', 'Misture tudo, molde em formato de biscoito e asse por 15 minutos.', 20, 'Energético', 'Média', 4, NULL, NULL, 190, 6.00, 26.00, 8.00);
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `users`
+-- Estrutura para tabela `receita_ingredientes`
 --
 
-CREATE TABLE `users` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(120) NOT NULL,
+CREATE TABLE `receita_ingredientes` (
+  `id` int(11) NOT NULL,
+  `receita_id` int(11) NOT NULL,
+  `alimento_id` int(11) NOT NULL,
+  `quantidade` decimal(8,2) DEFAULT NULL,
+  `unidade_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `refeicoes_usuario`
+--
+
+CREATE TABLE `refeicoes_usuario` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `receita_id` int(11) NOT NULL,
+  `tipo_refeicao` enum('cafe','almoco','jantar','lanche') DEFAULT NULL,
+  `data_refeicao` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `unidades`
+--
+
+CREATE TABLE `unidades` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `unidades`
+--
+
+INSERT INTO `unidades` (`id`, `nome`) VALUES
+(1, 'gramas'),
+(2, 'ml'),
+(3, 'unidade'),
+(4, 'colher'),
+(5, 'xícara');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(120) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `daily_calorie_goal` int(11) DEFAULT 2000,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT NULL
+  `senha` varchar(255) NOT NULL,
+  `idade` int(11) DEFAULT NULL,
+  `peso` decimal(5,2) DEFAULT NULL,
+  `altura` decimal(5,2) DEFAULT NULL,
+  `objetivo` enum('emagrecer','manter','ganhar_massa') DEFAULT NULL,
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `users`
+-- Despejando dados para a tabela `usuarios`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `daily_calorie_goal`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'admin@nutritech.com', '$2y$10$4U6CHP5NsfUCSI547zaRnuotWpEzk1Qmc/OC7Bq2uMCQh0eOnYZ.y', 2000, '2026-03-10 01:29:16', NULL),
-(2, 'João Pedro Mello', 'mellojoaopedro20@gmail.com', '$2y$10$4U6CHP5NsfUCSI547zaRnuotWpEzk1Qmc/OC7Bq2uMCQh0eOnYZ.y', 2000, '2026-03-09 23:19:04', NULL);
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `water_logs`
---
-
-CREATE TABLE `water_logs` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `glasses` int(11) DEFAULT 0,
-  `log_date` date NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `water_logs`
---
-
-INSERT INTO `water_logs` (`id`, `user_id`, `glasses`, `log_date`, `created_at`) VALUES
-(5, 2, 5, '2026-03-10', '2026-03-10 01:02:03'),
-(6, 1, 1, '2026-03-10', '2026-03-10 01:51:50');
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `idade`, `peso`, `altura`, `objetivo`, `criado_em`) VALUES
+(1, 'Admin', 'admin@nutritech.com', '$2y$10$91Ty4a5GmqA4ekswO67L6u5zzajrny0Nyb8mqpO2dryQyZJ3eNOVa', 19, 75.00, 1.70, NULL, '2026-03-11 04:53:57');
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices de tabela `categories`
+-- Índices de tabela `alimentos`
 --
-ALTER TABLE `categories`
+ALTER TABLE `alimentos`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `foods`
+-- Índices de tabela `controle_agua`
 --
-ALTER TABLE `foods`
+ALTER TABLE `controle_agua`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Índices de tabela `progresso_usuario`
+--
+ALTER TABLE `progresso_usuario`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Índices de tabela `receitas`
+--
+ALTER TABLE `receitas`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `meals`
+-- Índices de tabela `receita_ingredientes`
 --
-ALTER TABLE `meals`
+ALTER TABLE `receita_ingredientes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_meal_user` (`user_id`),
-  ADD KEY `fk_meal_food` (`food_id`);
+  ADD KEY `receita_id` (`receita_id`),
+  ADD KEY `alimento_id` (`alimento_id`),
+  ADD KEY `unidade_id` (`unidade_id`);
 
 --
--- Índices de tabela `recipes`
+-- Índices de tabela `refeicoes_usuario`
 --
-ALTER TABLE `recipes`
+ALTER TABLE `refeicoes_usuario`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_recipe_category` (`category_id`);
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `receita_id` (`receita_id`);
 
 --
--- Índices de tabela `users`
+-- Índices de tabela `unidades`
 --
-ALTER TABLE `users`
+ALTER TABLE `unidades`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
-
---
--- Índices de tabela `water_logs`
---
-ALTER TABLE `water_logs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_water_user` (`user_id`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT de tabela `categories`
+-- AUTO_INCREMENT de tabela `alimentos`
 --
-ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de tabela `foods`
---
-ALTER TABLE `foods`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
-
---
--- AUTO_INCREMENT de tabela `meals`
---
-ALTER TABLE `meals`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `recipes`
---
-ALTER TABLE `recipes`
+ALTER TABLE `alimentos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `users`
+-- AUTO_INCREMENT de tabela `controle_agua`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `controle_agua`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de tabela `water_logs`
+-- AUTO_INCREMENT de tabela `progresso_usuario`
 --
-ALTER TABLE `water_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `progresso_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `receitas`
+--
+ALTER TABLE `receitas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `receita_ingredientes`
+--
+ALTER TABLE `receita_ingredientes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `refeicoes_usuario`
+--
+ALTER TABLE `refeicoes_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `unidades`
+--
+ALTER TABLE `unidades`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para tabelas despejadas
 --
 
 --
--- Restrições para tabelas `meals`
+-- Restrições para tabelas `controle_agua`
 --
-ALTER TABLE `meals`
-  ADD CONSTRAINT `fk_meal_food` FOREIGN KEY (`food_id`) REFERENCES `foods` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_meal_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `controle_agua`
+  ADD CONSTRAINT `controle_agua_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `recipes`
+-- Restrições para tabelas `progresso_usuario`
 --
-ALTER TABLE `recipes`
-  ADD CONSTRAINT `fk_recipe_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL;
+ALTER TABLE `progresso_usuario`
+  ADD CONSTRAINT `progresso_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `water_logs`
+-- Restrições para tabelas `receita_ingredientes`
 --
-ALTER TABLE `water_logs`
-  ADD CONSTRAINT `fk_water_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `receita_ingredientes`
+  ADD CONSTRAINT `receita_ingredientes_ibfk_1` FOREIGN KEY (`receita_id`) REFERENCES `receitas` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `receita_ingredientes_ibfk_2` FOREIGN KEY (`alimento_id`) REFERENCES `alimentos` (`id`),
+  ADD CONSTRAINT `receita_ingredientes_ibfk_3` FOREIGN KEY (`unidade_id`) REFERENCES `unidades` (`id`);
+
+--
+-- Restrições para tabelas `refeicoes_usuario`
+--
+ALTER TABLE `refeicoes_usuario`
+  ADD CONSTRAINT `refeicoes_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `refeicoes_usuario_ibfk_2` FOREIGN KEY (`receita_id`) REFERENCES `receitas` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

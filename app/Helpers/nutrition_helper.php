@@ -1,68 +1,69 @@
 <?php
 
 use App\Models\UserModel;
-use App\Models\MealModel;
 
-if (!function_exists('daily_calorie_goal')) {
+if (!function_exists('meta_calorias_diaria')) {
 
-    function daily_calorie_goal($userId)
+    function meta_calorias_diaria($usuarioId)
     {
-        $userModel = new UserModel();
+        $usuarioModel = new UserModel();
 
-        $user = $userModel->find($userId);
+        $usuario = $usuarioModel->find($usuarioId);
 
-        return $user['daily_calorie_goal'] ?? 2000;
+        return $usuario['meta_calorias_diaria'] ?? 2000;
     }
 }
 
-if (!function_exists('today_calories')) {
+if (!function_exists('calorias_hoje')) {
 
-    function today_calories($userId)
+    function calorias_hoje($usuarioId)
     {
         $db = \Config\Database::connect();
 
-        $result = $db->table('meals')
-            ->selectSum('foods.calories', 'total')
-            ->join('foods', 'foods.id = meals.food_id')
-            ->where('meals.user_id', $userId)
-            ->where('meal_date', date('Y-m-d'))
+        $result = $db->table('refeicoes_usuario ru')
+            ->select('SUM(a.calorias * ri.quantidade) as total')
+            ->join('receitas r', 'r.id = ru.receita_id')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id')
+            ->join('alimentos a', 'a.id = ri.alimento_id')
+            ->where('ru.usuario_id', $usuarioId)
+            ->where('ru.data_refeicao', date('Y-m-d'))
             ->get()
             ->getRowArray();
 
-        return $result['total'] ?? 0;
+        return round($result['total'] ?? 0);
     }
 }
 
-if (!function_exists('calories_remaining')) {
+if (!function_exists('calorias_restantes')) {
 
-    function calories_remaining($userId)
+    function calorias_restantes($usuarioId)
     {
-        $goal = daily_calorie_goal($userId);
-        $consumed = today_calories($userId);
+        $meta = meta_calorias_diaria($usuarioId);
+        $consumido = calorias_hoje($usuarioId);
 
-        return $goal - $consumed;
+        return $meta - $consumido;
     }
 }
 
-if (!function_exists('calorie_percentage')) {
+if (!function_exists('percentual_calorias')) {
 
-    function calorie_percentage($userId)
+    function percentual_calorias($usuarioId)
     {
-        $goal = daily_calorie_goal($userId);
-        $consumed = today_calories($userId);
+        $meta = meta_calorias_diaria($usuarioId);
+        $consumido = calorias_hoje($usuarioId);
 
-        if ($goal == 0) {
+        if ($meta == 0) {
             return 0;
         }
 
-        return round(($consumed / $goal) * 100);
+        return min(100, round(($consumido / $meta) * 100));
     }
 }
 
-if (!function_exists('format_number')) {
+if (!function_exists('formatar_numero')) {
 
-    function format_number($number)
+    function formatar_numero($numero)
     {
-        return number_format($number, 0, ',', '.');
+        return number_format($numero, 0, ',', '.');
     }
 }

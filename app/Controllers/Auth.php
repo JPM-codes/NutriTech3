@@ -52,10 +52,10 @@ class Auth extends BaseController
 
         $user = $this->userModel->findByEmail($email);
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['senha'])) {
             session()->set([
                 'id'   => $user['id'],
-                'name' => $user['name'],
+                'name' => $user['nome'],
                 'email' => $user['email'],
                 'logged_in' => true
             ]);
@@ -73,7 +73,7 @@ class Auth extends BaseController
         $rules = [
             'name'     => 'required|min_length[3]',
             // is_unique garante que ninguém crie duas contas com o mesmo email na tabela users
-            'email'    => 'required|valid_email|is_unique[users.email]', 
+            'email'    => 'required|valid_email|is_unique[usuarios.email]', 
             'password' => 'required|min_length[4]',
             'confirm'  => 'matches[password]' // Garante que a confirmação de senha é idêntica
         ];
@@ -89,22 +89,28 @@ class Auth extends BaseController
         $name     = $this->request->getPost('name');
         $email    = $this->request->getPost('email');
         $password = $this->request->getPost('password');
+        $age = $this->request->getPost('age');
+        $peso = $this->request->getPost('peso');
+        $altura = $this->request->getPost('altura');
 
         // 4. Criptografando a senha (ISSO FAZ O LOGIN FUNCIONAR DEPOIS!)
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // 5. Salvando no banco de dados usando o Model
         $this->userModel->insert([
-            'name'     => $name,
+            'nome'     => $name,
             'email'    => $email,
-            'password' => $hashedPassword
+            'senha' => $hashedPassword,
+            'idade' => $age,
+            'peso' => $peso,
+            'altura' => $altura
         ]);
 
         $user = $this->userModel->findByEmail($email);
 
         session()->set([
             'id'   => $user['id'],
-            'name' => $user['name'],
+            'name' => $user['nome'],
             'email' => $user['email'],
             'logged_in' => true
         ]);

@@ -6,13 +6,16 @@ use CodeIgniter\Model;
 
 class UserModel extends Model {
 
-    protected $table = 'users';
+    protected $table = 'usuarios';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
     protected $allowedFields = [
-        'name',
+        'nome',
         'email',
-        'password'
+        'senha',
+        'idade',
+        'peso',
+        'altura'
     ];
 
     public function allUsers()

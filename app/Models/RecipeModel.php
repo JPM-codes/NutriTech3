@@ -6,21 +6,15 @@ use CodeIgniter\Model;
 
 class RecipeModel extends Model {
 
-    protected $table = 'recipes';
+    protected $table = 'receitas';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
     protected $allowedFields = [
-        'nome', // ok
-        'calorias',
+        'nome',
+        'descricao',
+        'categoria',
         'tempo_preparo',
-        'difuculdade',
-        'proteina',
-        'carboidratos',
-        'gordura',
-        'ingredientes',
-        'modo_preparo',
-        'regras',
-        'category_id',
+        'porcoes',
         'imagem',
     ];
 

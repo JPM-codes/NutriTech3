@@ -1,65 +1,68 @@
 <?php
 
-if (!function_exists('today_macros')) {
+use App\Models\UserModel;
 
-    function today_macros($userId)
+if (!function_exists('macros_hoje')) {
+
+    function macros_hoje($usuarioId)
     {
         $db = \Config\Database::connect();
 
-        $result = $db->table('meals')
+        $result = $db->table('refeicoes_usuario ru')
             ->select('
-                SUM(foods.protein * meals.quantity) as protein,
-                SUM(foods.carbs * meals.quantity) as carbs,
-                SUM(foods.fat * meals.quantity) as fat
+                SUM(a.proteinas * ri.quantidade) as proteinas,
+                SUM(a.carboidratos * ri.quantidade) as carboidratos,
+                SUM(a.gorduras * ri.quantidade) as gorduras
             ')
-            ->join('foods', 'foods.id = meals.food_id')
-            ->where('meals.user_id', $userId)
-            ->where('meal_date', date('Y-m-d'))
+            ->join('receitas r', 'r.id = ru.receita_id')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id')
+            ->join('alimentos a', 'a.id = ri.alimento_id')
+            ->where('ru.usuario_id', $usuarioId)
+            ->where('ru.data_refeicao', date('Y-m-d'))
             ->get()
             ->getRowArray();
 
         return [
-            'protein' => round($result['protein'] ?? 0),
-            'carbs' => round($result['carbs'] ?? 0),
-            'fat' => round($result['fat'] ?? 0),
+            'proteinas' => round($result['proteinas'] ?? 0),
+            'carboidratos' => round($result['carboidratos'] ?? 0),
+            'gorduras' => round($result['gorduras'] ?? 0),
         ];
     }
 }
 
 
-if (!function_exists('macro_goals')) {
+if (!function_exists('metas_macros')) {
 
-    function macro_goals($userId)
+    function metas_macros($usuarioId)
     {
-        $userModel = new \App\Models\UserModel();
-        $user = $userModel->find($userId);
+        $usuarioModel = new UserModel();
+        $usuario = $usuarioModel->find($usuarioId);
 
-        $calories = $user['daily_calorie_goal'] ?? 2000;
+        $calorias = $usuario['meta_calorias_diaria'] ?? 2000;
 
-        // divisão padrão
-        $protein = ($calories * 0.30) / 4;
-        $carbs = ($calories * 0.40) / 4;
-        $fat = ($calories * 0.30) / 9;
+        $proteinas = ($calorias * 0.30) / 4;
+        $carboidratos = ($calorias * 0.40) / 4;
+        $gorduras = ($calorias * 0.30) / 9;
 
         return [
-            'protein' => round($protein),
-            'carbs' => round($carbs),
-            'fat' => round($fat)
+            'proteinas' => round($proteinas),
+            'carboidratos' => round($carboidratos),
+            'gorduras' => round($gorduras)
         ];
     }
 }
 
 
-if (!function_exists('macro_percentage')) {
+if (!function_exists('percentual_macro')) {
 
-    function macro_percentage($value, $goal)
+    function percentual_macro($valor, $meta)
     {
-        if ($goal == 0) {
+        if ($meta == 0) {
             return 0;
         }
 
-        $percentage = ($value / $goal) * 100;
+        $percentual = ($valor / $meta) * 100;
 
-        return min(round($percentage), 100);
+        return min(round($percentual), 100);
     }
 }

@@ -6,23 +6,23 @@ use CodeIgniter\Model;
 
 class WaterModel extends Model
 {
-    protected $table = 'water_logs';
+    protected $table = 'controle_agua';
     protected $primaryKey = 'id';
 
     protected $allowedFields = [
-        'user_id',
-        'glasses',
-        'log_date'
+        'usuario_id',
+        'quantidade_ml',
+        'data_registro'
     ];
 
     public function findByUser($id)
     {
-        return $this->where('user_id', $id)->first();
+        return $this->where('usuario_id', $id)->first();
     }
 
     public function today($userId)
     {
-        return $this->where('user_id', $userId)
+        return $this->where('usuario_id', $userId)
                     ->first();
     }
 
@@ -33,15 +33,15 @@ class WaterModel extends Model
         if ($today) {
 
             return $this->update($today['id'], [
-                'glasses' => $glasses
+                'quantidade_ml' => $glasses
             ]);
 
         }
 
         return $this->insert([
-            'user_id' => $userId,
-            'glasses' => $glasses,
-            'log_date' => date('Y-m-d')
+            'usuario_id' => $userId,
+            'quantidade_ml' => $glasses,
+            'data_registro' => date('Y-m-d')
         ]);
     }
 }
