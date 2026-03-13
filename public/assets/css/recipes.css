@@ -357,6 +357,7 @@
     animation: slideUp 0.3s ease;
 }
 
+
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -374,9 +375,12 @@
 }
 
 .modal-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 100%;           /* Ocupa toda a largura disponível no container */
+    height: 100%;         /* Defina uma altura fixa que fique bonita no seu modal (pode ajustar esse valor) */
+    object-fit: cover;     /* A MÁGICA: Faz a imagem cobrir o espaço sem distorcer, cortando os excessos */
+    object-position: center; /* Garante que o centro da imagem seja o ponto principal de foco */
+    display: block;        /* Remove pequenos espaços em branco indesejados abaixo da imagem */
+    border-radius: 8px 8px 0 0; /* Opcional: Deixa as pontas superiores arredondadas, caso a imagem fique no topo do modal */
 }
 
 .modal-close {

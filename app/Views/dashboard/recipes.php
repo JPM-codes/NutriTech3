@@ -43,7 +43,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="recipes-grid">
         <?php foreach ($recipes as $recipe): ?>
-            <div class="recipe-card bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer" onclick="openRecipeDetail(<?= esc($recipe['id']) ?>)">
+            <div class="recipe-card bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer" onclick="abrirModalReceita(<?= esc($recipe['id']) ?>)">
 
                 <div class="relative h-40 overflow-hidden">
                     <img src="<?= base_url('assets/img/recipes/' . esc($recipe['imagem'])) ?>"
@@ -119,120 +119,67 @@
 
 <script src="recipes.js"></script>
 <script>
-    // Recipe data
-    const recipes = [{
-            id: 1,
-            name: 'Bowl de Açaí Proteico',
-            image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400',
-            category: 'Café da manhã',
-            calories: 350,
-            time: 10,
-            difficulty: 'Fácil',
-            protein: 15,
-            carbs: 45,
-            fat: 12,
-            ingredients: ['200g açaí', '1 banana', '30g granola', '1 scoop whey protein', 'Frutas a gosto'],
-            instructions: 'Bata o açaí congelado com a banana no liquidificador. Transfira para uma tigela e cubra com granola, whey protein e frutas de sua preferência. Sirva imediatamente.'
-        },
-        {
-            id: 2,
-            name: 'Frango Grelhado com Legumes',
-            image: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400',
-            category: 'Almoço',
-            calories: 420,
-            time: 30,
-            difficulty: 'Médio',
-            protein: 45,
-            carbs: 20,
-            fat: 18,
-            ingredients: ['200g peito de frango', '100g brócolis', '100g cenoura', '50g abobrinha', 'Azeite e temperos'],
-            instructions: 'Tempere o frango com sal, pimenta e ervas. Grelhe em fogo médio por 6-8 minutos de cada lado. Enquanto isso, asse os legumes com azeite a 200°C por 20 minutos.'
-        },
-        {
-            id: 3,
-            name: 'Overnight Oats',
-            image: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400',
-            category: 'Café da manhã',
-            calories: 280,
-            time: 5,
-            difficulty: 'Fácil',
-            protein: 12,
-            carbs: 40,
-            fat: 8,
-            ingredients: ['50g aveia', '200ml leite', '1 colher de mel', 'Frutas frescas', 'Sementes de chia'],
-            instructions: 'Misture a aveia com o leite em um pote. Adicione mel e sementes de chia. Cubra e refrigere durante a noite. Pela manhã, adicione as frutas e sirva frio.'
-        },
-        {
-            id: 4,
-            name: 'Salada Caesar com Frango',
-            image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400',
-            category: 'Almoço',
-            calories: 380,
-            time: 20,
-            difficulty: 'Fácil',
-            protein: 35,
-            carbs: 15,
-            fat: 22,
-            ingredients: ['Alface romana', '150g frango grelhado', 'Croutons', 'Queijo parmesão', 'Molho caesar'],
-            instructions: 'Lave e seque a alface. Grelhe o frango e corte em tiras. Monte a salada com alface, frango, croutons e queijo. Finalize com o molho caesar.'
-        },
-        {
-            id: 5,
-            name: 'Smoothie Verde Detox',
-            image: 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400',
-            category: 'Lanche',
-            calories: 150,
-            time: 5,
-            difficulty: 'Fácil',
-            protein: 3,
-            carbs: 30,
-            fat: 2,
-            ingredients: ['1 xícara de espinafre', '1 maçã verde', '1 pedaço de gengibre', '200ml água de coco', 'Gelo'],
-            instructions: 'Adicione todos os ingredientes no liquidificador e bata até ficar homogêneo. Sirva imediatamente com gelo.'
-        },
-        {
-            id: 6,
-            name: 'Salmão ao Forno',
-            image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400',
-            category: 'Jantar',
-            calories: 450,
-            time: 25,
-            difficulty: 'Médio',
-            protein: 40,
-            carbs: 5,
-            fat: 30,
-            ingredients: ['200g filé de salmão', '1 limão', 'Ervas finas', 'Azeite de oliva', 'Sal e pimenta'],
-            instructions: 'Tempere o salmão com sal, pimenta, suco de limão e ervas. Regue com azeite. Asse em forno pré-aquecido a 200°C por 20 minutos ou até dourar.'
+    // Função para abrir o modal e carregar os dados
+    async function abrirModalReceita(receitaId) {
+        try {
+            // Mostra o modal (opcionalmente pode mostrar um "Carregando..." aqui)
+            document.getElementById('recipe-modal').classList.remove('hidden');
+
+            // Faz a requisição para o controller do CodeIgniter
+            const response = await fetch(`<?= base_url('dashboard/receitas/detalhes/') ?>${receitaId}`);
+            const data = await response.json();
+
+            if (data.erro) {
+                alert(data.erro);
+                return;
+            }
+
+            console.log("DADOS QUE VIERAM DO PHP:", data);
+
+
+            // Preenche o Cabeçalho e Imagem
+            document.getElementById('modal-title').innerText = data.nome;
+            document.getElementById('modal-category').innerText = data.categoria;
+            document.getElementById('modal-image').src = `<?=  base_url('assets/img/recipes/')?>${data.imagem}`; // Ajuste o caminho da imagem conforme seu projeto
+            document.getElementById('modal-instructions').innerText = data.descricao;
+
+            // Preenche as Estatísticas (Tempo e Porções)
+            document.getElementById('modal-stats').innerHTML = `
+            <span>⏱️ ${data.tempo_preparo} min</span> | 
+            <span>🍽️ ${data.porcoes} porções</span>
+        `;
+
+            // Preenche os Macros (calculados no RecipeModel)
+            document.getElementById('modal-macros').innerHTML = `
+            <span class="macro-badge">🔥 ${data.calorias} kcal</span>
+            <span class="macro-badge">🥩 ${data.proteinas}g Prot</span>
+            <span class="macro-badge">🍞 ${data.carboidratos}g Carb</span>
+            <span class="macro-badge">🥑 ${data.gordura}g Gord</span>
+        `;
+
+            // Limpa e Preenche a Lista de Ingredientes
+            const listaIngredientes = document.getElementById('modal-ingredients');
+            listaIngredientes.innerHTML = ''; // Limpa a lista antes de adicionar
+
+            data.lista_ingredientes.forEach(ing => {
+                const li = document.createElement('li');
+                // Vai imprimir algo como: "200 g de Frango"
+                li.innerText = `${ing.quantidade} ${ing.unidade} de ${ing.alimento}`;
+                listaIngredientes.appendChild(li);
+            });
+
+            // Configura o botão de Adicionar ao Diário com o ID da receita atual
+            const addBtn = document.querySelector('.modal-add-btn');
+            addBtn.setAttribute('onclick', `addToDaily(${data.id})`);
+
+        } catch (error) {
+            console.error("Erro ao buscar a receita:", error);
         }
-    ];
-
-    function openRecipeModal(id) {
-        const recipe = recipes.find(r => r.id === id);
-        if (!recipe) return;
-
-        document.getElementById('modal-image').src = recipe.image;
-        document.getElementById('modal-title').textContent = recipe.name;
-        document.getElementById('modal-category').textContent = recipe.category;
-        document.getElementById('modal-stats').innerHTML = `
-                <span>🔥 ${recipe.calories} kcal</span>
-                <span>⏱️ ${recipe.time} min</span>
-                <span>📊 ${recipe.difficulty}</span>
-            `;
-        document.getElementById('modal-macros').innerHTML = `
-                <div class="macro-box protein"><p class="macro-value">${recipe.protein}g</p><p class="macro-label">Proteína</p></div>
-                <div class="macro-box carbs"><p class="macro-value">${recipe.carbs}g</p><p class="macro-label">Carboidratos</p></div>
-                <div class="macro-box fat"><p class="macro-value">${recipe.fat}g</p><p class="macro-label">Gordura</p></div>
-            `;
-        document.getElementById('modal-ingredients').innerHTML = recipe.ingredients.map(ing => `<li>${ing}</li>`).join('');
-        document.getElementById('modal-instructions').textContent = recipe.instructions;
-
-        document.getElementById('recipe-modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
     }
 
+    // Função que você já chamou no botão de fechar do seu HTML
     function closeRecipeModal() {
         document.getElementById('recipe-modal').classList.add('hidden');
-        document.body.style.overflow = '';
     }
 
     function addToDaily() {

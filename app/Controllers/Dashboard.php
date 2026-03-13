@@ -86,7 +86,7 @@ class Dashboard extends BaseController
         ]);
     }
 
-    public function recipes()
+    public function receitas()
     {
 
         $data = [
@@ -101,5 +101,26 @@ class Dashboard extends BaseController
         echo view('includes/navbar', $data);
         echo view('dashboard/recipes', $data);
         echo view('includes/footer', $data);
+    }
+
+    // ... suas outras funções (index, updateWater, receitas)
+
+    public function detalhes($id)
+    {
+        // 1. Busca a receita com os macros usando o Model que já está no seu construtor
+        $receita = $this->recipeModel->getReceitaComMacros($id);
+
+        if (!$receita) {
+            return $this->response->setStatusCode(404)->setJSON(['erro' => 'Receita não encontrada']);
+        }
+
+        // 2. Busca os ingredientes
+        $ingredientes = $this->receitaIngredientesModel->getIngredientesDaReceita($id);
+
+        // 3. Monta o array final
+        $receita['lista_ingredientes'] = $ingredientes;
+
+        // 4. Retorna em JSON para o seu JavaScript ler
+        return $this->response->setJSON($receita);
     }
 }
