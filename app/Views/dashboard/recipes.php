@@ -1,4 +1,4 @@
-<div class="p-4 space-y-6 animate-fade-in">
+<div class="p-4 pb-24 space-y-6 animate-fade-in">
     <div>
         <h2 class="text-2xl font-bold text-gray-800">Receitas Saudáveis</h2>
         <p class="text-gray-500">Encontre receitas nutritivas e deliciosas</p>
@@ -14,16 +14,20 @@
     </div>
 
     <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        <button class="category-btn ${currentCategory === 'all' ? 'active' : ''} whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-600"
-            onclick="filterByCategory('all')">🍽️ Todas</button>
-        <button class="category-btn ${currentCategory === 'Café da manhã' ? 'active' : ''} whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-600"
-            onclick="filterByCategory('Café da manhã')">☀️ Café da Manhã</button>
-        <button class="category-btn ${currentCategory === 'Almoço' ? 'active' : ''} whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-600"
-            onclick="filterByCategory('Almoço')">🥗 Almoço</button>
-        <button class="category-btn ${currentCategory === 'Jantar' ? 'active' : ''} whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-600"
-            onclick="filterByCategory('Jantar')">🌙 Jantar</button>
-        <button class="category-btn ${currentCategory === 'Lanche' ? 'active' : ''} whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-600"
-            onclick="filterByCategory('Lanche')">🍎 Lanches</button>
+        <button class="category-btn bg-primary text-white whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all"
+            onclick="filterByCategory('all', this)">🍽️ Todas</button>
+
+        <button class="category-btn bg-gray-100 text-gray-600 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all"
+            onclick="filterByCategory('cafe', this)">☀️ Café da Manhã</button>
+
+        <button class="category-btn bg-gray-100 text-gray-600 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all"
+            onclick="filterByCategory('almoco', this)">🥗 Almoço</button>
+
+        <button class="category-btn bg-gray-100 text-gray-600 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all"
+            onclick="filterByCategory('jantar', this)">🌙 Jantar</button>
+
+        <button class="category-btn bg-gray-100 text-gray-600 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all"
+            onclick="filterByCategory('lanche', this)">🍎 Lanches</button>
     </div>
 
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary p-6 text-white">
@@ -42,41 +46,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="recipes-grid">
-        <?php foreach ($recipes as $recipe): ?>
-            <div class="recipe-card bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer" onclick="abrirModalReceita(<?= esc($recipe['id']) ?>)">
-
-                <div class="relative h-40 overflow-hidden">
-                    <img src="<?= base_url('assets/img/recipes/' . esc($recipe['imagem'])) ?>"
-                        alt="<?= esc($recipe['nome']) ?>"
-                        class="recipe-image w-full h-full object-cover"
-                        onerror="this.src='https://via.placeholder.com/400x200?text=Receita'">
-
-                    <div class="absolute top-2 right-2 px-2 py-1 bg-white/90 rounded-full text-xs font-medium">
-                        <?= esc($recipe['dificuldade']) ?>
-                    </div>
-                </div>
-
-                <div class="p-4">
-                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                        <span><?= esc($recipe['categoria'] ?? 'Sem categoria') ?></span>
-                        <span>•</span>
-                        <span>⏱️ <?= esc($recipe['tempo_preparo']) ?> min</span>
-                    </div>
-
-                    <h3 class="font-bold text-gray-800 mb-2"><?= esc($recipe['nome']) ?></h3>
-
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3 text-xs">
-                            <span class="text-red-500">P: <?= esc($recipe['proteinas'] ?? 0) ?>g</span>
-                            <span class="text-amber-500">C: <?= esc($recipe['carboidratos'] ?? 0) ?>g</span>
-                            <span class="text-blue-500">G: <?= esc($recipe['gordura'] ?? 0) ?>g</span>
-                        </div>
-                        <span class="font-bold text-primary"><?= esc($recipe['calorias'] ?? 0) ?> kcal</span>
-                    </div>
-                </div>
-
-            </div>
-        <?php endforeach; ?>
+        <?= view('includes/card_receitas', ['recipes' => $recipes]) ?>
     </div>
 </div>
 
@@ -119,6 +89,8 @@
 
 <script src="recipes.js"></script>
 <script>
+    let termoPesquisa = "";
+    let categoriaAtual = "all";
     // Função para abrir o modal e carregar os dados
     async function abrirModalReceita(receitaId) {
         try {
@@ -134,13 +106,11 @@
                 return;
             }
 
-            console.log("DADOS QUE VIERAM DO PHP:", data);
-
 
             // Preenche o Cabeçalho e Imagem
             document.getElementById('modal-title').innerText = data.nome;
             document.getElementById('modal-category').innerText = data.categoria;
-            document.getElementById('modal-image').src = `<?=  base_url('assets/img/recipes/')?>${data.imagem}`; // Ajuste o caminho da imagem conforme seu projeto
+            document.getElementById('modal-image').src = `<?= base_url('assets/img/recipes/') ?>${data.imagem}`; // Ajuste o caminho da imagem conforme seu projeto
             document.getElementById('modal-instructions').innerText = data.descricao;
 
             // Preenche as Estatísticas (Tempo e Porções)
@@ -187,18 +157,37 @@
         closeRecipeModal();
     }
 
-    // Category filter
-    document.querySelectorAll('.category-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-        });
-    });
 
-    // Quick filters
-    document.querySelectorAll('.quick-filter').forEach(filter => {
-        filter.addEventListener('click', () => {
-            filter.classList.toggle('active');
+    async function atualizarCards() {
+        try {
+            const url = `<?= base_url('dashboard/receitas/filtrar') ?>?categoria=${categoriaAtual}&busca=${termoPesquisa}`;
+
+            const response = await fetch(url);
+            const htmlRetornado = await response.text();
+
+            document.getElementById('recipes-grid').innerHTML = htmlRetornado;
+        } catch (error) {
+            console.error("Erro ao atualizar:", error);
+        }
+    }
+
+    function filterRecipes(valor) {
+        termoPesquisa = valor;
+        atualizarCards();
+    }
+
+    function filterByCategory(categoria, botaoClicado) {
+        categoriaAtual = categoria;
+
+        categoriaAtual = categoria;
+
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('bg-primary', 'text-white');
+            btn.classList.add('bg-gray-100', 'text-gray-600');
         });
-    });
+        botaoClicado.classList.remove('bg-gray-100', 'text-gray-600');
+        botaoClicado.classList.add('bg-primary', 'text-white');
+
+        atualizarCards();
+    }
 </script>

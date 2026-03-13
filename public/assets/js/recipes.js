@@ -116,27 +116,6 @@ function initRecipes() {
     document.head.appendChild(style);
 }
 
-function filterByCategory(category) {
-    currentCategory = category;
-    const recipesSection = document.querySelector('[class*="space-y-6"]');
-    if (recipesSection) {
-        document.getElementById('recipes-grid').innerHTML = renderRecipeCards();
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.classList.remove('active');
-            btn.style.backgroundColor = '#f3f4f6';
-            btn.style.color = '#4b5563';
-        });
-        event.target.classList.add('active');
-        event.target.style.backgroundColor = '#22c55e';
-        event.target.style.color = 'white';
-    }
-}
-
-function filterRecipes(term) {
-    searchTerm = term;
-    document.getElementById('recipes-grid').innerHTML = renderRecipeCards();
-}
-
 function openRecipeDetail(recipeId) {
     const recipe = AppState.recipes.find(r => r.id === recipeId);
     if (!recipe) return;

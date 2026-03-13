@@ -65,4 +65,28 @@ class RecipeModel extends Model
             ->get()
             ->getRowArray();
     }
+
+    public function getReceitasFiltradas($categoria = 'all', $busca = '')
+    {
+        $builder = $this->db->table('receitas')
+            ->select('
+            receitas.*,
+            ROUND(SUM((alimentos.proteinas / 100) * receita_ingredientes.quantidade), 1) AS proteinas,
+            ROUND(SUM((alimentos.carboidratos / 100) * receita_ingredientes.quantidade), 1) AS carboidratos,
+            ROUND(SUM((alimentos.gorduras / 100) * receita_ingredientes.quantidade), 1) AS gordura,
+            ROUND(SUM((alimentos.calorias / 100) * receita_ingredientes.quantidade), 0) AS calorias
+        ')
+            ->join('receita_ingredientes', 'receita_ingredientes.receita_id = receitas.id', 'left')
+            ->join('alimentos', 'alimentos.id = receita_ingredientes.alimento_id', 'left');
+
+        if ($categoria !== 'all') {
+            $builder->where('receitas.categoria', $categoria);
+        }
+
+        if (!empty($busca)) {
+            $builder->like('receitas.nome', $busca);
+        }
+
+        return $builder->groupBy('receitas.id')->get()->getResultArray();
+    }
 }
