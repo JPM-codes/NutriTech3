@@ -80,6 +80,7 @@
                 <h3>👨‍🍳 Modo de Preparo</h3>
                 <p id="modal-instructions" class="instructions-text"></p>
             </div>
+            <input type="hidden" id="modal-recipe-id" value="">
             <button class="modal-add-btn" onclick="addToDaily()">
                 + Adicionar ao Diário
             </button>
@@ -89,8 +90,9 @@
 
 <script src="recipes.js"></script>
 <script>
-    let termoPesquisa = "";
+        let termoPesquisa = "";
     let categoriaAtual = "all";
+
     // Função para abrir o modal e carregar os dados
     async function abrirModalReceita(receitaId) {
         try {
@@ -98,7 +100,7 @@
             document.getElementById('recipe-modal').classList.remove('hidden');
 
             // Faz a requisição para o controller do CodeIgniter
-            const response = await fetch(`<?= base_url('dashboard/receitas/detalhes/') ?>${receitaId}`);
+            const response = await fetch(`<?= base_url('receitas/detalhes/') ?>${receitaId}`);
             const data = await response.json();
 
             if (data.erro) {
@@ -111,6 +113,7 @@
             document.getElementById('modal-title').innerText = data.nome;
             document.getElementById('modal-category').innerText = data.categoria;
             document.getElementById('modal-image').src = `<?= base_url('assets/img/recipes/') ?>${data.imagem}`; // Ajuste o caminho da imagem conforme seu projeto
+            document.getElementById('modal-recipe-id').value = receitaId;
             document.getElementById('modal-instructions').innerText = data.descricao;
 
             // Preenche as Estatísticas (Tempo e Porções)
@@ -152,26 +155,7 @@
         document.getElementById('recipe-modal').classList.add('hidden');
     }
 
-    function addToDaily() {
-        alert('Receita adicionada ao diário!');
-        closeRecipeModal();
-    }
-
-
-    async function atualizarCards() {
-        try {
-            const url = `<?= base_url('dashboard/receitas/filtrar') ?>?categoria=${categoriaAtual}&busca=${termoPesquisa}`;
-
-            const response = await fetch(url);
-            const htmlRetornado = await response.text();
-
-            document.getElementById('recipes-grid').innerHTML = htmlRetornado;
-        } catch (error) {
-            console.error("Erro ao atualizar:", error);
-        }
-    }
-
-    function filterRecipes(valor) {
+        function filterRecipes(valor) {
         termoPesquisa = valor;
         atualizarCards();
     }
@@ -189,5 +173,17 @@
         botaoClicado.classList.add('bg-primary', 'text-white');
 
         atualizarCards();
+    }
+        async function atualizarCards() {
+        try {
+            const url = `<?= base_url('receitas/filtrar') ?>?categoria=${categoriaAtual}&busca=${termoPesquisa}`;
+
+            const response = await fetch(url);
+            const htmlRetornado = await response.text();
+
+            document.getElementById('recipes-grid').innerHTML = htmlRetornado;
+        } catch (error) {
+            console.error("Erro ao atualizar:", error);
+        }
     }
 </script>
