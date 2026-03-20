@@ -50,7 +50,7 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <p class="text-sm text-gray-500 mb-4">
                             <?= $remaining > 0 ? 'Restam' : 'Excedeu' ?>
                             <span class="font-bold <?= $remaining > 0 ? 'text-primary' : 'text-red-500' ?>">
-                                <?= abs($remaining) ?> kcal
+                            <?= abs($remaining) ?> kcal
                             </span>
                         </p>
                         <div class="space-y-2">
@@ -58,7 +58,12 @@ $offset = $circumference * (1 - ($percentage / 100));
                                 <span class="text-gray-600">Meta diária <span class="font-medium"><?= formatar_numero($goal) ?> kcal</span></span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-600">Consumido <span class="font-medium text-primary"><?= formatar_numero($consumed) ?> kcal</span></span>
+                                <span class="text-gray-600">
+                                    Consumido 
+                                    <span class="font-medium text-primary">
+                                        <?= formatar_numero($consumed) ?> kcal
+                                    </span>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -153,7 +158,6 @@ $offset = $circumference * (1 - ($percentage / 100));
 
             <div class="space-y-3">
                 <h3 class="font-semibold text-gray-800">Refeições de Hoje</h3>
-
                 <?= renderizar_secao_refeicao('cafe', '☀️ Café da Manhã', $todayData['cafe']) ?>
                 <?= renderizar_secao_refeicao('almoco', '🍽️ Almoço', $todayData['almoco']) ?>
                 <?= renderizar_secao_refeicao('jantar', '🌙 Jantar', $todayData['jantar']) ?>

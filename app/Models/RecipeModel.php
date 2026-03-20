@@ -32,7 +32,7 @@ class RecipeModel extends Model
 
     public function getReceitasComMacros()
     {
-        return $this->db->table('receitas')
+        return $this
             ->select('
                 receitas.*,
                 ROUND(SUM((alimentos.proteinas / 100) * receita_ingredientes.quantidade), 1) AS proteinas,
@@ -50,7 +50,7 @@ class RecipeModel extends Model
 
     public function getReceitaComMacros($receitaId)
     {
-        return $this->db->table('receitas')
+        return $this
             ->select('
             receitas.*,
             ROUND(SUM((alimentos.proteinas / 100) * receita_ingredientes.quantidade), 1) AS proteinas,
@@ -68,7 +68,7 @@ class RecipeModel extends Model
 
     public function getReceitasFiltradas($categoria = 'all', $busca = '')
     {
-        $builder = $this->db->table('receitas')
+        $builder = $this
             ->select('
             receitas.*,
             ROUND(SUM((alimentos.proteinas / 100) * receita_ingredientes.quantidade), 1) AS proteinas,

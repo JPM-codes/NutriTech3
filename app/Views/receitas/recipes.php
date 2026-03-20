@@ -81,6 +81,7 @@
                 <p id="modal-instructions" class="instructions-text"></p>
             </div>
             <input type="hidden" id="modal-recipe-id" value="">
+            <input type="hidden" id="modal-recipe-category" value="">
             <button class="modal-add-btn" onclick="addToDaily()">
                 + Adicionar ao Diário
             </button>
@@ -114,6 +115,7 @@
             document.getElementById('modal-category').innerText = data.categoria;
             document.getElementById('modal-image').src = `<?= base_url('assets/img/recipes/') ?>${data.imagem}`; // Ajuste o caminho da imagem conforme seu projeto
             document.getElementById('modal-recipe-id').value = receitaId;
+            document.getElementById('modal-recipe-category').value = data.categoria;
             document.getElementById('modal-instructions').innerText = data.descricao;
 
             // Preenche as Estatísticas (Tempo e Porções)

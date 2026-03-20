@@ -1,12 +1,13 @@
 <?php
 
 use App\Models\UserModel;
+use Config\Database;
 
 if (!function_exists('macros_hoje')) {
 
     function macros_hoje($usuarioId)
     {
-        $db = \Config\Database::connect();
+        $db = Database::connect();
 
         $result = $db->table('refeicoes_usuario ru')
             ->select('

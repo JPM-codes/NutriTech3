@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\UserModel;
+use Config\Database;
 
 if (!function_exists('meta_calorias_diaria')) {
 
@@ -18,19 +19,22 @@ if (!function_exists('calorias_hoje')) {
 
     function calorias_hoje($usuarioId)
     {
-        $db = \Config\Database::connect();
+        $db = Database::connect();
+
+        $hoje = date('Y-m-d');
 
         $result = $db->table('refeicoes_usuario ru')
-            ->select('SUM(a.calorias * ri.quantidade) as total')
-            ->join('receitas r', 'r.id = ru.receita_id')
-            ->join('receita_ingredientes ri', 'ri.receita_id = r.id')
-            ->join('alimentos a', 'a.id = ri.alimento_id')
+            ->select('COALESCE(SUM(COALESCE(a.calorias,0)/100 * COALESCE(ri.quantidade,0)),0) as total')
+            ->join('receitas r', 'r.id = ru.receita_id', 'left')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id', 'left')
+            ->join('alimentos a', 'a.id = ri.alimento_id', 'left')
             ->where('ru.usuario_id', $usuarioId)
-            ->where('ru.data_refeicao', date('Y-m-d'))
+            ->where('ru.data_refeicao >=', $hoje . ' 00:00:00')
+            ->where('ru.data_refeicao <', date('Y-m-d 00:00:00', strtotime($hoje . ' +1 day')))
             ->get()
             ->getRowArray();
 
-        return round($result['total'] ?? 0);
+        return round((float) $result['total']);
     }
 }
 

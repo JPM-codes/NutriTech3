@@ -2,7 +2,7 @@
 function addToDaily() {
     // Pegamos o ID da receita que deve estar guardado em algum lugar do modal
     const receitaId = document.getElementById('modal-recipe-id').value;
-    const tipoRefeicao = 'almoço'; // Você pode pegar isso de um <select> no modal
+    const tipoRefeicao = document.getElementById('modal-recipe-category').value; // Você pode pegar isso de um <select> no modal
 
     fetch('/receitas/adicionar', {
         method: 'POST',

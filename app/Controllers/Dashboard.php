@@ -58,7 +58,6 @@ class Dashboard extends BaseController
         ];
 
 
-
         echo view('includes/header', $data);
         echo view('includes/navbar', $data);
         echo view('dashboard/index', $data);
