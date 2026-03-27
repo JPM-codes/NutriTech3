@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\MetasModel;
 use App\Models\UserModel;
 use Config\Database;
 
@@ -8,10 +9,12 @@ if (!function_exists('meta_calorias_diaria')) {
     function meta_calorias_diaria($usuarioId)
     {
         $usuarioModel = new UserModel();
+        $metasModel = new MetasModel();
 
         $usuario = $usuarioModel->find($usuarioId);
-
-        return $usuario['meta_calorias_diaria'] ?? 2000;
+        $metas = $metasModel->where('usuario_id', $usuario['id'])->first();
+        
+        return $metas['meta_calorias'] ?? 2000;
     }
 }
 

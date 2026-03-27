@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\MetasModel;
 use App\Models\UserModel;
 use App\Models\WaterModel;
 
@@ -10,10 +11,13 @@ class Auth extends BaseController
     protected $userModel;
     protected $waterModel;
 
+    protected $metasModel;
+
     public function __construct()
     {
         $this->userModel = new UserModel();
         $this->waterModel = new WaterModel();
+        $this->metasModel = new MetasModel();
 
 
         helper('auth');
@@ -117,9 +121,16 @@ class Auth extends BaseController
 
         // 6. Salvando no banco de dados o waterModel
         $this->waterModel->insert([
-            'user_id' => $user['id'],
-            'glasses' => 0,
-            'log_date' => date('Y-m-d')
+            'usuario_id' => $user['id'],
+            'quantidade_ml' => 0,
+            'data_registro' => date('Y-m-d')
+        ]);
+
+        $this->metasModel->insert([
+            'usuario_id' => $user['id'],
+            'meta_peso' => 0,
+            'meta_calorias' => 2000,
+            'nivel_atividade' => 1,
         ]);
 
         // 7. Tudo certo! Redireciona para o login com mensagem de sucesso
