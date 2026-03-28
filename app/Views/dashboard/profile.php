@@ -177,22 +177,22 @@
             <div class="bg-gray-50 rounded-xl p-4">
                 <p class="text-sm text-gray-600 mb-2">Sugestões:</p>
                 <div class="space-y-2">
-                    <button onclick="setCalorieGoal(${calculateSuggestedCalories('lose')})" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
+                    <button onclick="setCalorieGoal(<?= calculateSuggestedCalories('lose', $user, $meta) ?>)" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
                         <p class="font-medium text-gray-800">🔥 Perder peso</p>
-                        <p class="text-sm text-gray-500">${formatNumber(calculateSuggestedCalories('lose'))} kcal/dia</p>
+                        <p class="text-sm text-gray-500"><?= round(calculateSuggestedCalories('lose', $user, $meta)) ?> kcal/dia</p>
                     </button>
-                    <button onclick="setCalorieGoal(${calculateSuggestedCalories('maintain')})" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
+                    <button onclick="setCalorieGoal(<?= calculateSuggestedCalories('maintrain',$user, $meta) ?>)" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
                         <p class="font-medium text-gray-800">⚖️ Manter peso</p>
-                        <p class="text-sm text-gray-500">${formatNumber(calculateSuggestedCalories('maintain'))} kcal/dia</p>
+                        <p class="text-sm text-gray-500"><?= round(calculateSuggestedCalories('maintrain', $user, $meta)) ?> kcal/dia</p>
                     </button>
-                    <button onclick="setCalorieGoal(${calculateSuggestedCalories('gain')})" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
+                    <button onclick="setCalorieGoal(<?= calculateSuggestedCalories('gain', $user, $meta) ?>)" class="w-full py-2 px-4 bg-white rounded-lg text-left hover:bg-primary/10 transition-colors">
                         <p class="font-medium text-gray-800">💪 Ganhar massa</p>
-                        <p class="text-sm text-gray-500">${formatNumber(calculateSuggestedCalories('gain'))} kcal/dia</p>
+                        <p class="text-sm text-gray-500"><?= round(calculateSuggestedCalories('gain', $user, $meta)) ?> kcal/dia</p>
                     </button>
                 </div>
             </div>
 
-            <button onclick="saveCalorieGoal()" class="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-medium hover:opacity-90 transition-opacity">
+            <button onclick="<?= base_url('perfil/atualizar') ?>" class="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-medium hover:opacity-90 transition-opacity">
                 Salvar Meta
             </button>
         </div>
@@ -291,6 +291,10 @@
                 if (botaoClicado) botaoClicado.disabled = false;
             });
     }
+
+function setCalorieGoal(value) {
+    document.getElementById('calorie-goal-input').value = value;
+}
 
     function atualizarCoresDosBotoes(botaoAtivo) {
         // 1. Pega todos os botões de atividade na tela

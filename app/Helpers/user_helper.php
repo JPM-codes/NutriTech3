@@ -2,7 +2,8 @@
 
 
 if (!function_exists('activity_option')) {
-    function activity_option($value, $title, $description, $emoji, $current = null) {
+    function activity_option($value, $title, $description, $emoji, $current = null)
+    {
 
         $isActive = $current === $value;
 
@@ -12,7 +13,7 @@ if (!function_exists('activity_option')) {
             : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent';
 
         $textClass = $isActive ? 'text-primary' : 'text-gray-800';
-        
+
         // O check agora sempre existe, mas fica escondido (hidden) se não for o ativo
         $checkDisplay = $isActive ? '' : 'hidden';
         $check = "<span class=\"text-primary icon-check {$checkDisplay}\">✓</span>";
@@ -39,13 +40,15 @@ if (!function_exists('activity_option')) {
 }
 
 if (!function_exists('imc')) {
-    function calcularIMC($peso, $altura) {
+    function calcularIMC($peso, $altura)
+    {
         if ($altura <= 0) return 0;
         $imc = $peso / ($altura * $altura);
         return round($imc, 2);
     }
 
-    function imc($peso, $altura) {
+    function imc($peso, $altura)
+    {
         $resultado = calcularIMC($peso, $altura);
 
         // Clasificación simple
@@ -54,5 +57,29 @@ if (!function_exists('imc')) {
         elseif ($resultado < 30) $status = "Acima do peso";
         else $status = "Obesidade";
         return $status;
+    }
+}
+
+if (!function_exists('calculateSuggestedCalories')) {
+
+    function calculateSuggestedCalories($goal, $user, $meta)
+    {
+        $bmr = 10 * $user['peso'] + 6.25 * $user['altura'] - 5 * $user['idade'] + 5;
+        $activityMultipliers = [
+            '1' => 1.2,
+            '2' => 1.375,
+            '3' => 1.55,
+            '4' => 1.755
+        ];
+        $tdee = $bmr * ($activityMultipliers[$meta['nivel_atividade']]);
+
+        switch ($goal) {
+            case 'lose':
+                return round($tdee - 500);
+            case 'gain':
+                return round($tdee + 300);
+            default:
+                return round($tdee);
+        }
     }
 }
