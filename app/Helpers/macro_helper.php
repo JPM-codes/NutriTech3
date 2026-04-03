@@ -11,13 +11,15 @@ if (!function_exists('macros_hoje')) {
 
         $result = $db->table('refeicoes_usuario ru')
             ->select('
-                SUM(a.proteinas / 100 * ri.quantidade) as proteinas,
-                SUM(a.carboidratos / 100 * ri.quantidade) as carboidratos,
-                SUM(a.gorduras / 100 * ri.quantidade) as gorduras
+                SUM(COALESCE((a_ing.proteinas / 100 * ri.quantidade), a_avulso.proteinas)) as proteinas,
+                SUM(COALESCE((a_ing.carboidratos / 100 * ri.quantidade), a_avulso.carboidratos)) as carboidratos,
+                SUM(COALESCE((a_ing.gorduras / 100 * ri.quantidade), a_avulso.gorduras)) as gorduras
             ')
-            ->join('receitas r', 'r.id = ru.receita_id')
-            ->join('receita_ingredientes ri', 'ri.receita_id = r.id')
-            ->join('alimentos a', 'a.id = ri.alimento_id')
+            // LEFT JOIN para permitir tanto receitas quanto alimentos avulsos
+            ->join('receitas r', 'r.id = ru.receita_id', 'left')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id', 'left')
+            ->join('alimentos a_ing', 'a_ing.id = ri.alimento_id', 'left') // Tabela para os ingredientes da receita
+            ->join('alimentos a_avulso', 'a_avulso.id = ru.alimento_id', 'left') // Tabela para o alimento adicionado direto
             ->where('ru.usuario_id', $usuarioId)
             ->where('ru.data_refeicao', date('Y-m-d'))
             ->get()

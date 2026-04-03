@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12-Mar-2026 às 02:37
+-- Tempo de geração: 03/04/2026 às 00:24
 -- Versão do servidor: 10.4.32-MariaDB
--- versão do PHP: 8.2.12
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `alimentos`
+-- Estrutura para tabela `alimentos`
 --
 
 CREATE TABLE `alimentos` (
@@ -37,7 +37,7 @@ CREATE TABLE `alimentos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `alimentos`
+-- Despejando dados para a tabela `alimentos`
 --
 
 INSERT INTO `alimentos` (`id`, `nome`, `calorias`, `proteinas`, `carboidratos`, `gorduras`) VALUES
@@ -125,7 +125,7 @@ INSERT INTO `alimentos` (`id`, `nome`, `calorias`, `proteinas`, `carboidratos`, 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `controle_agua`
+-- Estrutura para tabela `controle_agua`
 --
 
 CREATE TABLE `controle_agua` (
@@ -136,30 +136,41 @@ CREATE TABLE `controle_agua` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `controle_agua`
+-- Despejando dados para a tabela `controle_agua`
 --
 
 INSERT INTO `controle_agua` (`id`, `usuario_id`, `quantidade_ml`, `data_registro`) VALUES
-(4, 1, 8, '2026-03-12');
+(6, 3, 0, '2026-03-26'),
+(7, 3, 7, '2026-03-30');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `progresso_usuario`
+-- Estrutura para tabela `metas_usuario`
 --
 
-CREATE TABLE `progresso_usuario` (
+CREATE TABLE `metas_usuario` (
   `id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `peso` decimal(5,2) DEFAULT NULL,
-  `gordura_corporal` decimal(5,2) DEFAULT NULL,
-  `data_registro` date DEFAULT NULL
+  `meta_peso` decimal(5,2) DEFAULT NULL,
+  `meta_calorias` int(11) DEFAULT NULL,
+  `nivel_atividade` int(11) DEFAULT NULL,
+  `ativo` tinyint(1) DEFAULT 1,
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
+  `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `metas_usuario`
+--
+
+INSERT INTO `metas_usuario` (`id`, `usuario_id`, `meta_peso`, `meta_calorias`, `nivel_atividade`, `ativo`, `criado_em`, `atualizado_em`) VALUES
+(1, 3, 74.00, 1476, 2, 1, '2026-03-26 22:58:44', '2026-03-31 22:16:37');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `receitas`
+-- Estrutura para tabela `receitas`
 --
 
 CREATE TABLE `receitas` (
@@ -175,7 +186,7 @@ CREATE TABLE `receitas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `receitas`
+-- Despejando dados para a tabela `receitas`
 --
 
 INSERT INTO `receitas` (`id`, `nome`, `descricao`, `categoria`, `tempo_preparo`, `porcoes`, `imagem`, `criado_em`, `dificuldade`) VALUES
@@ -203,7 +214,7 @@ INSERT INTO `receitas` (`id`, `nome`, `descricao`, `categoria`, `tempo_preparo`,
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `receita_ingredientes`
+-- Estrutura para tabela `receita_ingredientes`
 --
 
 CREATE TABLE `receita_ingredientes` (
@@ -215,7 +226,7 @@ CREATE TABLE `receita_ingredientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `receita_ingredientes`
+-- Despejando dados para a tabela `receita_ingredientes`
 --
 
 INSERT INTO `receita_ingredientes` (`id`, `receita_id`, `alimento_id`, `quantidade`, `unidade_id`) VALUES
@@ -268,21 +279,22 @@ INSERT INTO `receita_ingredientes` (`id`, `receita_id`, `alimento_id`, `quantida
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `refeicoes_usuario`
+-- Estrutura para tabela `refeicoes_usuario`
 --
 
 CREATE TABLE `refeicoes_usuario` (
   `id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `receita_id` int(11) NOT NULL,
+  `receita_id` int(11) DEFAULT NULL,
   `tipo_refeicao` enum('cafe','almoco','jantar','lanche') DEFAULT NULL,
-  `data_refeicao` date DEFAULT NULL
+  `data_refeicao` date DEFAULT NULL,
+  `alimento_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `unidades`
+-- Estrutura para tabela `unidades`
 --
 
 CREATE TABLE `unidades` (
@@ -291,7 +303,7 @@ CREATE TABLE `unidades` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `unidades`
+-- Despejando dados para a tabela `unidades`
 --
 
 INSERT INTO `unidades` (`id`, `nome`) VALUES
@@ -304,7 +316,7 @@ INSERT INTO `unidades` (`id`, `nome`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuarios`
+-- Estrutura para tabela `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -320,44 +332,44 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `usuarios`
+-- Despejando dados para a tabela `usuarios`
 --
 
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `idade`, `peso`, `altura`, `objetivo`, `criado_em`) VALUES
-(1, 'Admin', 'admin@nutritech.com', '$2y$10$91Ty4a5GmqA4ekswO67L6u5zzajrny0Nyb8mqpO2dryQyZJ3eNOVa', 19, 75.00, 1.70, NULL, '2026-03-11 04:53:57');
+(3, 'Admin', 'admin@nutritech.com', '$2y$10$Bj1ovhVfrGe7MSCERBe2hutLzdgG9aVxNQr8pgDWMZymEohUakqxa', 22, 95.00, 1.70, NULL, '2026-03-26 22:58:44');
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices para tabela `alimentos`
+-- Índices de tabela `alimentos`
 --
 ALTER TABLE `alimentos`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `controle_agua`
+-- Índices de tabela `controle_agua`
 --
 ALTER TABLE `controle_agua`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
--- Índices para tabela `progresso_usuario`
+-- Índices de tabela `metas_usuario`
 --
-ALTER TABLE `progresso_usuario`
+ALTER TABLE `metas_usuario`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
--- Índices para tabela `receitas`
+-- Índices de tabela `receitas`
 --
 ALTER TABLE `receitas`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `receita_ingredientes`
+-- Índices de tabela `receita_ingredientes`
 --
 ALTER TABLE `receita_ingredientes`
   ADD PRIMARY KEY (`id`),
@@ -366,7 +378,7 @@ ALTER TABLE `receita_ingredientes`
   ADD KEY `unidade_id` (`unidade_id`);
 
 --
--- Índices para tabela `refeicoes_usuario`
+-- Índices de tabela `refeicoes_usuario`
 --
 ALTER TABLE `refeicoes_usuario`
   ADD PRIMARY KEY (`id`),
@@ -374,20 +386,20 @@ ALTER TABLE `refeicoes_usuario`
   ADD KEY `receita_id` (`receita_id`);
 
 --
--- Índices para tabela `unidades`
+-- Índices de tabela `unidades`
 --
 ALTER TABLE `unidades`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `usuarios`
+-- Índices de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT de tabelas despejadas
+-- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
@@ -400,13 +412,13 @@ ALTER TABLE `alimentos`
 -- AUTO_INCREMENT de tabela `controle_agua`
 --
 ALTER TABLE `controle_agua`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT de tabela `progresso_usuario`
+-- AUTO_INCREMENT de tabela `metas_usuario`
 --
-ALTER TABLE `progresso_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `metas_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `receitas`
@@ -424,7 +436,7 @@ ALTER TABLE `receita_ingredientes`
 -- AUTO_INCREMENT de tabela `refeicoes_usuario`
 --
 ALTER TABLE `refeicoes_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de tabela `unidades`
@@ -436,26 +448,26 @@ ALTER TABLE `unidades`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Restrições para despejos de tabelas
+-- Restrições para tabelas despejadas
 --
 
 --
--- Limitadores para a tabela `controle_agua`
+-- Restrições para tabelas `controle_agua`
 --
 ALTER TABLE `controle_agua`
   ADD CONSTRAINT `controle_agua_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
--- Limitadores para a tabela `progresso_usuario`
+-- Restrições para tabelas `metas_usuario`
 --
-ALTER TABLE `progresso_usuario`
-  ADD CONSTRAINT `progresso_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+ALTER TABLE `metas_usuario`
+  ADD CONSTRAINT `metas_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
--- Limitadores para a tabela `receita_ingredientes`
+-- Restrições para tabelas `receita_ingredientes`
 --
 ALTER TABLE `receita_ingredientes`
   ADD CONSTRAINT `receita_ingredientes_ibfk_1` FOREIGN KEY (`receita_id`) REFERENCES `receitas` (`id`) ON DELETE CASCADE,
@@ -463,7 +475,7 @@ ALTER TABLE `receita_ingredientes`
   ADD CONSTRAINT `receita_ingredientes_ibfk_3` FOREIGN KEY (`unidade_id`) REFERENCES `unidades` (`id`);
 
 --
--- Limitadores para a tabela `refeicoes_usuario`
+-- Restrições para tabelas `refeicoes_usuario`
 --
 ALTER TABLE `refeicoes_usuario`
   ADD CONSTRAINT `refeicoes_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,

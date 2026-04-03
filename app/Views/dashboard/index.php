@@ -214,7 +214,7 @@ $offset = $circumference * (1 - ($percentage / 100));
                         <form action="<?= base_url('dashboard/adicionarAlimento') ?>" method="post" class="form-adicionar-alimento">
 
                             <input type="hidden" name="alimento_id" value="<?= $alimento['id'] ?>">
-                            <input type="hidden" name="tipo_refeicao" class="input-refeicao" value="cafe">
+                            <input type="hidden" name="tipo_refeicao" class="input-refeicao" value="">
 
                             <div class="food-item flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl border-b border-gray-100 transition-colors">
                                 <div>
@@ -242,63 +242,7 @@ $offset = $circumference * (1 - ($percentage / 100));
                     <p class="text-center text-gray-500 py-4 text-sm">Nenhum alimento encontrado.</p>
                 <?php endif; ?>
             </div>
-
-            <div class="mt-4 pt-4 border-t border-gray-100">
-                <button id="quick-add-btn" class="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Adicionar manualmente
-                </button>
-            </div>
         </div>
-    </div>
-</div>
-
-<!-- Quick Add Form Modal -->
-<div id="quick-add-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl w-full max-w-md animate-slide-up">
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 class="text-lg font-bold text-gray-800">Adicionar Manualmente</h2>
-            <button id="close-quick-modal" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-        <form id="quick-add-form" class="p-4 space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nome do alimento</label>
-                <input type="text" name="name" required class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Ex: Banana">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Calorias</label>
-                    <input type="number" name="calories" required class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="0">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Porção (g)</label>
-                    <input type="number" name="portion" required class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="100">
-                </div>
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Proteína (g)</label>
-                    <input type="number" name="protein" class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="0">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Carbos (g)</label>
-                    <input type="number" name="carbs" class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="0">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Gordura (g)</label>
-                    <input type="number" name="fat" class="w-full px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="0">
-                </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-medium hover:opacity-90 transition-opacity">
-                Adicionar Alimento
-            </button>
-        </form>
     </div>
 </div>
 

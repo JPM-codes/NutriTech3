@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     setupEventListeners();
     updateDateDisplay();
-    
+
     setTimeout(() => {
         hideSplashScreen();
     }, 1000);
@@ -17,47 +17,90 @@ function toggleUserMenu() {
     document.getElementById('user-dropdown').classList.toggle('hidden');
 }
 
+// 1. Evento APENAS para fechar o menu de usuário (Click)
 document.addEventListener('click', (e) => {
+    const userMenu = document.getElementById('user-menu');
+    const dropdown = document.getElementById('user-dropdown');
+
+    // Se o menu existe e o clique foi fora dele, esconde o menu
+    if (userMenu && dropdown && !userMenu.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
+
+// 2. Controla os cliques na tela (Abrir/Fechar Modal e Menu)
+document.addEventListener('click', (e) => {
+
+    // -- Lógica para ABRIR o modal --
+    // Certifique-se de que seus botões na tela principal tenham a classe 'btn-abrir-modal' e o atributo 'data-refeicao'
+    const btnAbrir = e.target.closest('.btn-abrir-modal');
+    if (btnAbrir) {
+        // Salva a refeição (ex: 'cafe', 'almoco') do botão que foi clicado
+        refeicaoSelecionada = btnAbrir.getAttribute('data-refeicao');
+
+        const modal = document.getElementById('add-food-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    // -- Lógica para FECHAR o modal --
+    const btnFechar = e.target.closest('#close-modal');
+    if (btnFechar) {
+        const modal = document.getElementById('add-food-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
+    // -- Lógica do Menu do Usuário (mantida para não quebrar seu layout) --
     const userMenu = document.getElementById('user-menu');
     const dropdown = document.getElementById('user-dropdown');
     if (userMenu && dropdown && !userMenu.contains(e.target)) {
         dropdown.classList.add('hidden');
     }
-    // Pega todos os formulários de adicionar alimento da lista
-const formsAlimentos = document.querySelectorAll('.form-adicionar-alimento');
+});
 
-formsAlimentos.forEach(form => {
-    form.addEventListener('submit', async function(e) {
-        // 1. Evita que a página recarregue!
+// 3. Controla o envio do formulário (Adicionar o alimento)
+document.addEventListener('submit', async function (e) {
+
+    // Verifica se o submit veio de dentro da sua div exata
+    if (e.target && e.target.classList.contains('form-adicionar-alimento')) {
         e.preventDefault();
 
-        // 2. Descobre qual refeição está ativa nos botões lá em cima
-        const activeMealBtn = document.querySelector('.meal-type-btn.active');
-        const mealType = activeMealBtn ? activeMealBtn.dataset.meal : '';
+        // Impede que o envio seja duplicado
+        e.stopImmediatePropagation();
 
-        // 3. Coloca o valor da refeição no input oculto do formulário que foi clicado
-        this.querySelector('.input-refeicao').value = mealType;
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
 
-        // 4. Prepara os dados para envio
-        const formData = new FormData(this);
-        const url = this.getAttribute('action'); // Pega a URL do base_url() do PHP
+        const formData = new FormData(form);
+        const url = form.getAttribute('action');
+
+        // Adicione esta linha para investigar:
+        console.log("A refeição que está sendo enviada é:", formData.get('tipo_refeicao'));
+
+        if (submitBtn) submitBtn.disabled = true;
 
         try {
-            // 5. Envia para o CodeIgniter
             const response = await fetch(url, {
                 method: 'POST',
-                body: formData // Envia como FormData, então no PHP você usará getPost()
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
             const result = await response.json();
 
-            // 6. Trata a resposta do PHP
             if (result.success) {
-                alert(result.message); // Ou use sua função showToast()
-                
-                // Atualiza o painel principal (se você tiver uma função para isso)
+                alert(result.message);
+
                 if (typeof renderDashboard === 'function') renderDashboard();
-                
+
             } else {
                 alert('Erro: ' + result.error);
             }
@@ -65,9 +108,10 @@ formsAlimentos.forEach(form => {
         } catch (error) {
             console.error('Erro na requisição:', error);
             alert('Falha na conexão com o servidor.');
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
         }
-    });
-});
+    }
 });
 
 
@@ -75,7 +119,7 @@ formsAlimentos.forEach(form => {
 function setupEventListeners() {
     const closeBtn = document.getElementById('close-modal');
     if (closeBtn) closeBtn.addEventListener('click', closeAddFoodModal);
-    
+
     const addFoodModal = document.getElementById('add-food-modal');
     if (addFoodModal) {
         addFoodModal.addEventListener('click', (e) => {
@@ -85,10 +129,10 @@ function setupEventListeners() {
 
     const quickAddBtn = document.getElementById('quick-add-btn');
     if (quickAddBtn) quickAddBtn.addEventListener('click', openQuickAddModal);
-    
+
     const closeQuickModalBtn = document.getElementById('close-quick-modal');
     if (closeQuickModalBtn) closeQuickModalBtn.addEventListener('click', closeQuickAddModal);
-    
+
     const quickAddModal = document.getElementById('quick-add-modal');
     if (quickAddModal) {
         quickAddModal.addEventListener('click', (e) => {
@@ -98,7 +142,7 @@ function setupEventListeners() {
 
     const quickAddForm = document.getElementById('quick-add-form');
     if (quickAddForm) quickAddForm.addEventListener('submit', handleQuickAdd);
-    
+
     const foodSearch = document.getElementById('food-search');
     if (foodSearch) foodSearch.addEventListener('input', handleFoodSearch);
 
@@ -144,9 +188,19 @@ function showToast(message) {
 }
 
 // ===== Modais de Comida =====
-function openAddFoodModal() {
+function openAddFoodModal(tipoRefeicao) {
     const modal = document.getElementById('add-food-modal');
+
     if (modal) {
+        // 1. Procura todos os inputs com a classe 'input-refeicao' dentro do modal
+        const inputsRefeicao = modal.querySelectorAll('.input-refeicao');
+
+        // 2. Altera o 'value' de todos eles para a refeição que foi clicada
+        inputsRefeicao.forEach(input => {
+            input.value = tipoRefeicao;
+        });
+
+        // 3. Abre o modal
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
@@ -161,43 +215,23 @@ function closeAddFoodModal() {
         if (searchInput) searchInput.value = '';
     }
 }
-
-function openQuickAddModal() {
-    closeAddFoodModal();
-    const modal = document.getElementById('quick-add-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
-
-function closeQuickAddModal() {
-    const modal = document.getElementById('quick-add-modal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        const form = document.getElementById('quick-add-form');
-        if (form) form.reset();
-    }
-}
-
 function handleFoodSearch(e) { loadFoodList(e.target.value); }
 
 function addFoodToMeal(foodId) {
     const food = AppState.foodDatabase.find(f => f.id === foodId);
     const activeMealBtn = document.querySelector('.meal-type-btn.active');
     const activeMeal = activeMealBtn ? activeMealBtn.dataset.meal : 'snack';
-    
+
     if (food) {
-        AppState.todayData.meals[activeMeal].push({...food, addedAt: new Date().toISOString()});
+        AppState.todayData.meals[activeMeal].push({ ...food, addedAt: new Date().toISOString() });
         AppState.todayData.calories += food.calories;
         AppState.todayData.protein += food.protein;
         AppState.todayData.carbs += food.carbs;
         AppState.todayData.fat += food.fat;
-        
+
         showToast(`${food.name} adicionado!`);
         closeAddFoodModal();
-        
+
         if (typeof renderDashboard === 'function') renderDashboard();
     }
 }
@@ -207,7 +241,7 @@ function handleQuickAdd(e) {
     const formData = new FormData(e.target);
     const activeMealBtn = document.querySelector('.meal-type-btn.active');
     const activeMeal = activeMealBtn ? activeMealBtn.dataset.meal : 'snack';
-    
+
     const food = {
         id: Date.now(),
         name: formData.get('name'),
@@ -218,16 +252,16 @@ function handleQuickAdd(e) {
         portion: parseInt(formData.get('portion')) || 100,
         emoji: '🍽️'
     };
-    
-    AppState.todayData.meals[activeMeal].push({...food, addedAt: new Date().toISOString()});
+
+    AppState.todayData.meals[activeMeal].push({ ...food, addedAt: new Date().toISOString() });
     AppState.todayData.calories += food.calories;
     AppState.todayData.protein += food.protein;
     AppState.todayData.carbs += food.carbs;
     AppState.todayData.fat += food.fat;
-    
+
     showToast(`${food.name} adicionado!`);
     closeQuickAddModal();
-    
+
     if (typeof renderDashboard === 'function') renderDashboard();
 }
 

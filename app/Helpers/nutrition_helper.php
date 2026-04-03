@@ -13,7 +13,7 @@ if (!function_exists('meta_calorias_diaria')) {
 
         $usuario = $usuarioModel->find($usuarioId);
         $metas = $metasModel->where('usuario_id', $usuario['id'])->first();
-        
+
         return $metas['meta_calorias'] ?? 2000;
     }
 }
@@ -25,14 +25,14 @@ if (!function_exists('calorias_hoje')) {
         $hoje = date('Y-m-d');
 
         $result = $db->table('refeicoes_usuario ru')
-            // 1. O 'false' aqui evita que o CodeIgniter quebre a fórmula matemática
-            // 2. Usamos 100.0 para forçar o banco a calcular as casas decimais corretamente
-            ->select('COALESCE(SUM((COALESCE(a.calorias,0) / 100.0) * COALESCE(ri.quantidade,0)), 0) as total', false)
-            
-            // 3. Ligação DIRETA: Pula a tabela 'receitas' e vai direto para os ingredientes
-            ->join('receita_ingredientes ri', 'ri.receita_id = ru.receita_id', 'left')
-            ->join('alimentos a', 'a.id = ri.alimento_id', 'left')
-            
+            ->select('COALESCE(SUM(COALESCE((a_ing.calorias / 100.0) * ri.quantidade, a_avulso.calorias)), 0) as total', false)
+
+            ->join('receitas r', 'r.id = ru.receita_id', 'left')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id', 'left')
+            ->join('alimentos a_ing', 'a_ing.id = ri.alimento_id', 'left')
+
+            ->join('alimentos a_avulso', 'a_avulso.id = ru.alimento_id', 'left')
+
             ->where('ru.usuario_id', $usuarioId)
             ->where('ru.data_refeicao', $hoje)
             ->get()

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RefeicoesUserModel extends Model
 {
-    
+
     protected $table = 'refeicoes_usuario';
 
     protected $allowedFields = [
@@ -22,28 +22,37 @@ class RefeicoesUserModel extends Model
     {
         return $this->where('usuario_id', $user)->findAll();
     }
-
-public function getAllReceitasHoje($user)
-{
-    return $this->db
-        ->table('refeicoes_usuario ru')
-        ->select('
+    public function getAllReceitasHoje($user)
+    {
+        return $this->db
+            ->table('refeicoes_usuario ru')
+            ->select('
             ru.id as refeicao_usuario_id,
             ru.tipo_refeicao,
-            r.id,
-            r.nome,
-            ROUND(SUM((a.calorias / 100 * ri.quantidade))) as calorias
+            
+            -- Retorna o ID da receita OU o ID do alimento avulso como "id"
+            COALESCE(r.id, a_avulso.id) as id,
+            
+            -- Retorna o nome da receita OU o nome do alimento como "nome"
+            COALESCE(r.nome, a_avulso.nome) as nome,
+            
+            ROUND(
+                COALESCE(
+                    SUM(a_ing.calorias / 100 * ri.quantidade), 
+                    a_avulso.calorias                          
+                )
+            ) as calorias
         ')
-        ->join('receitas r', 'r.id = ru.receita_id')
-        ->join('receita_ingredientes ri', 'ri.receita_id = r.id')
-        ->join('alimentos a', 'a.id = ri.alimento_id')
-        ->where('ru.usuario_id', $user)
-        ->where('ru.data_refeicao >=', date('Y-m-d 00:00:00'))
-        ->where('ru.data_refeicao <', date('Y-m-d 00:00:00', strtotime('+1 day')))
-        ->groupBy('ru.tipo_refeicao, r.id')
-        ->get()
-        ->getResultArray();
-}
+            ->join('receitas r', 'r.id = ru.receita_id', 'left')
+            ->join('receita_ingredientes ri', 'ri.receita_id = r.id', 'left')
+            ->join('alimentos a_ing', 'a_ing.id = ri.alimento_id', 'left')
+            ->join('alimentos a_avulso', 'a_avulso.id = ru.alimento_id', 'left')
+            ->where('ru.usuario_id', $user)
+            ->where('ru.data_refeicao', date('Y-m-d'))
+            ->groupBy('ru.id')
+            ->get()
+            ->getResultArray();
+    }
 
     public function getAllReceitasSemana($user)
     {
