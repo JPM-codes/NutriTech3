@@ -15,13 +15,13 @@ $routes -> group('auth', static function($routes) {
     $routes->post('register', 'Auth::register');
 });
 
-$routes -> group('dashboard', static function($routes){
+$routes -> group('dashboard', ['filter' => 'auth'], static function($routes){
     $routes->get('/','Dashboard::index');
     $routes->post('updateWater','Dashboard::updateWater');
     $routes->post('adicionarAlimento','Dashboard::adicionarAlimento');
     });
     
-$routes -> group('receitas', static function($routes) {
+$routes -> group('receitas', ['filter' => 'auth'] , static function($routes) {
         $routes->get('/', 'Receitas::index');
         $routes->get('filtrar','Receitas::filtrarReceitas');
         $routes->get('detalhes/(:num)','Receitas::detalhes/$1');
@@ -29,7 +29,7 @@ $routes -> group('receitas', static function($routes) {
         $routes->post('remover','Receitas::remover');
     });
 
-$routes -> group('perfil', static function($routes) {
+$routes -> group('perfil', ['filter' => 'auth'], static function($routes) {
     $routes->get('/', 'Profile::index');
     $routes->post('atualizar','Profile::atualizar');
     $routes->post('atualizarPerfil','Profile::atualizarPerfil');
