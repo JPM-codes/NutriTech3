@@ -36,3 +36,7 @@ $routes -> group('perfil', ['filter' => 'auth'], static function($routes) {
     $routes->post('atualizarCalorias','Profile::atualizarCalorias');
     $routes->post('criar','Profile::criar');
 });
+
+$routes -> group('admin', static function($routes) {
+   $routes->get('/', 'Admin::index'); 
+});
