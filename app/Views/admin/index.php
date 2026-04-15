@@ -1,762 +1,681 @@
+<?php if (session()->getFlashdata('success')): ?>
+    <div id="modal-sucesso" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 opacity-100 transition-opacity duration-300 pointer-events-none">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center animate-fadeIn">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-6 shadow-lg">
+                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Sucesso!</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+                <?= session()->getFlashdata('success') ?>
+            </p>
+
+            <div class="w-full bg-gray-200 rounded-full h-1 mt-8 overflow-hidden">
+                <div class="bg-gradient-to-r from-green-400 to-green-600 h-1 rounded-full animate-shrink-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modal-sucesso');
+            if (modal) {
+                setTimeout(() => {
+                    modal.classList.add('opacity-0');
+                    setTimeout(() => {
+                        modal.remove();
+                    }, 300);
+                }, 4000);
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes shrink-bar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        .animate-shrink-bar {
+            animation: shrink-bar 4s linear forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+<?php endif; ?>
+
+
+<?php if (isset($_SESSION['error'])): ?>
+    <?php $error = $_SESSION['error'];
+    unset($_SESSION['error']); ?>
+
+    <div id="errorModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[9999] animate-fadeIn">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 animate-slideIn">
+            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-red-400 to-red-600 mx-auto mb-6 shadow-lg">
+                <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4v2m0-10a9 9 0 110 18 9 9 0 010-18z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-center text-gray-900 mb-4">Erro</h2>
+            <p class="text-gray-600 text-center mb-8 leading-relaxed"><?= htmlspecialchars($error) ?></p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-6 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 hover:shadow-lg transition-all duration-200 flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() {
+            const modal = document.getElementById('errorModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        }
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideIn {
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+<?php endif; ?>
+
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nutritech | Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriTech Dashboard</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/dist/css/adminlte.min.css">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/daterangepicker/daterangepicker.css">
-    <!-- summernote -->
-    <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/summernote/summernote-bs4.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#22c55e',
+                        secondary: '#16a34a'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-green {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+
+        .gradient-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .gradient-purple {
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+        }
+
+        .sidebar-item {
+            position: relative;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            transform: translateX(4px);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+        }
+
+        .sidebar-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .table-row-hover {
+            transition: all 0.2s ease;
+        }
+
+        .table-row-hover:hover {
+            background-color: #f3f4f6;
+            box-shadow: inset 0 0 0 1px #e5e7eb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .animate-slide-in-down {
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 28px;
+        }
+    </style>
+
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
-    <div class="wrapper">
+<body class="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 min-h-screen">
 
-        <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="<?= base_url('assets') ?>/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-        </div>
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-md z-40 animate-slide-in-down">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button id="sidebar-toggle" class="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="gradient-green rounded-lg p-2 text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">NutriTech</h1>
+                </div>
+            </div>
 
-        <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.navbar -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 hover:bg-gray-100 rounded-lg transition group">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                </button>
 
-        <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
-                <img src="<?= base_url('assets') ?>/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">NutriTech</span>
-            </a>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group mt-2" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
+                <div class="relative group">
+                    <button class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition">
+                        <div class="w-10 h-10 gradient-green text-white flex items-center justify-center rounded-full font-bold shadow-lg">
+                            <?= strtoupper(substr(session()->get('nome') ?? 'A', 0, 1)) ?>
                         </div>
+                        <div class="hidden sm:block text-left">
+                            <p class="text-sm font-semibold text-gray-900"><?= session()->get('nome') ?? 'Admin' ?></p>
+                            <p class="text-xs text-gray-500">Administrador</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                    </button>
+
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="<?= base_url('profile') ?>" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 first:rounded-t-lg transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="text-sm">Meu Perfil</span>
+                        </a>
+                        <hr class="my-2">
+                        <a href="<?= base_url('auth/logout') ?>" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 last:rounded-b-lg transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-20">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed left-0 top-20 bottom-0 w-64 bg-white shadow-lg lg:translate-x-0 -translate-x-full transition-transform z-30 lg:z-20 overflow-y-auto">
+            <div class="p-6 space-y-2">
+                <a href="<?= base_url('admin') ?>" class="sidebar-item active">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l-4-4m0 0l-4 4m4-4v4"></path>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="<?= base_url('admin/usuarios') ?>" class="sidebar-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m6 0a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+                    </svg>
+                    <span class="font-medium">Usuários</span>
+                </a>
+
+                <a href="<?= base_url('admin/receitas') ?>" class="sidebar-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25c0 5.079 3.855 9.268 9 9.972m0-13c5.5 0 10 4.745 10 10.25 0 5.079-3.855 9.268-9 9.972"></path>
+                    </svg>
+                    <span class="font-medium">Receitas</span>
+                </a>
+
+                <a href="<?= base_url('admin/alimentos') ?>" class="sidebar-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                    <span class="font-medium">Alimentos</span>
+                </a>
+
+                <hr class="my-4">
+
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase px-4">Configurações</h3>
+                    <a href="#" class="sidebar-item">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="font-medium">Configurações</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="flex-1 lg:ml-64">
+            <div class="max-w-6xl mx-auto px-4 lg:px-8 py-8">
+
+                <!-- HEADER -->
+                <div class="mb-10 animate-fade-in">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+                    <p class="text-gray-500 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Visão geral do sistema em tempo real
+                    </p>
+                </div>
+
+                <!-- STATS CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-fade-in">
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 card-hover group overflow-hidden relative">
+                        <div class="absolute inset-0 gradient-green opacity-0 group-hover:opacity-5 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Total de Usuários</p>
+                                    <h3 class="text-4xl font-bold text-gray-900"><?= $totalUsuarios ?></h3>
+                                </div>
+                                <div class="stat-icon gradient-green text-white">👥</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="badge badge-success">↑ 12%</span>
+                                <span class="text-xs text-gray-500">vs. mês passado</span>
+                            </div>
+                            <a href="<?= base_url('admin/usuarios') ?>" class="inline-block mt-4 text-green-600 hover:text-green-700 font-semibold text-sm transition">
+                                Ver detalhes →
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 card-hover group overflow-hidden relative">
+                        <div class="absolute inset-0 gradient-blue opacity-0 group-hover:opacity-5 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Total de Receitas</p>
+                                    <h3 class="text-4xl font-bold text-gray-900"><?= $totalReceitas ?></h3>
+                                </div>
+                                <div class="stat-icon gradient-blue text-white">📚</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="badge badge-success">↑ 8%</span>
+                                <span class="text-xs text-gray-500">vs. mês passado</span>
+                            </div>
+                            <a href="<?= base_url('admin/receitas') ?>" class="inline-block mt-4 text-blue-600 hover:text-blue-700 font-semibold text-sm transition">
+                                Ver detalhes →
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 card-hover group overflow-hidden relative">
+                        <div class="absolute inset-0 gradient-purple opacity-0 group-hover:opacity-5 transition-opacity"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Total de Alimentos</p>
+                                    <h3 class="text-4xl font-bold text-gray-900"><?= $totalAlimentos ?></h3>
+                                </div>
+                                <div class="stat-icon gradient-purple text-white">🥗</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="badge badge-success">↑ 15%</span>
+                                <span class="text-xs text-gray-500">vs. mês passado</span>
+                            </div>
+                            <a href="<?= base_url('admin/alimentos') ?>" class="inline-block mt-4 text-purple-600 hover:text-purple-700 font-semibold text-sm transition">
+                                Ver detalhes →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- GRÁFICO -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-10 card-hover animate-fade-in">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Cadastros da Semana</h3>
+                        <p class="text-gray-500 text-sm">Evolução de novos registros</p>
+                    </div>
+                    <div class="relative h-80">
+                        <canvas id="graficoUsuarios"></canvas>
                     </div>
                 </div>
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <a href="<?= base_url() ?> dashboard" class="nav-link">
-                            <i class="nav-icon fas fa-arrow-left"></i>
-                            <p>
-                                Voltar
-                            </p>
-                        </a>
-                        <a href="<?= base_url('') ?>admin/usuarios" class="nav-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon bi bi-people-fill" viewBox="0 0 16 16">
-                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-                            </svg>
-                            <p>
-                                Usuarios
-                            </p>
-                        </a>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon bi bi-fork-knife" viewBox="0 0 16 16">
-                                    <path d="M13 .5c0-.276-.226-.506-.498-.465-1.703.257-2.94 2.012-3 8.462a.5.5 0 0 0 .498.5c.56.01 1 .13 1 1.003v5.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5zM4.25 0a.25.25 0 0 1 .25.25v5.122a.128.128 0 0 0 .256.006l.233-5.14A.25.25 0 0 1 5.24 0h.522a.25.25 0 0 1 .25.238l.233 5.14a.128.128 0 0 0 .256-.006V.25A.25.25 0 0 1 6.75 0h.29a.5.5 0 0 1 .498.458l.423 5.07a1.69 1.69 0 0 1-1.059 1.711l-.053.022a.92.92 0 0 0-.58.884L6.47 15a.971.971 0 1 1-1.942 0l.202-6.855a.92.92 0 0 0-.58-.884l-.053-.022a1.69 1.69 0 0 1-1.059-1.712L3.462.458A.5.5 0 0 1 3.96 0z" />
-                                </svg>
-                                <p>Lista de Receitas</p>
+                <!-- TABELA -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden card-hover animate-fade-in">
+                    <div class="p-8 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-1">Últimos usuários cadastrados</h3>
+                                <p class="text-gray-500 text-sm">Novos membros da plataforma</p>
+                            </div>
+                            <a href="<?= base_url('admin/usuarios') ?>" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm">
+                                Ver todos
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="<?= base_url('') ?>admin/alimentos" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Alimentos</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= base_url('') ?>admin/receitas" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Receitas</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <a href="<?= base_url('') ?>admin/dicas" class="nav-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon bi bi-lightbulb-fill" viewBox="0 0 16 16">
-                                <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m3 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1-.5-.5" />
-                            </svg>
-                            <p>
-                                Dicas
-                            </p>
-                        </a>
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
-            </div>
-            <!-- /.sidebar -->
-        </aside>
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">Dashboard</h1>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
-
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    <!-- Small boxes (Stat box) -->
-                    <div class="row">
-                        <!-- ./col -->
-                        <div class="col-lg-4 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3><?= $totalUsuarios ?></h3>
-
-                                    <p>Usuarios Cadastrados</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">Mais informações <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-4 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-primary">
-                                <div class="inner">
-                                    <h3><?= $totalReceitas ?></h3>
-
-                                    <p>Receitas Cadastradas</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">Mais informações <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-4 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3><?= $totalAlimentos ?></h3>
-
-                                    <p>Alimentos Cadastrados</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pizza"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">Mais informações <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
                         </div>
                     </div>
-                    <!-- /.row -->
-                    <!-- Main row -->
-                    <div class="row">
-                        <!-- Left col -->
-                        <section class="col-lg-7 connectedSortable">
-                            <!-- Custom tabs (Charts with tabs)-->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        <i class="fas fa-chart-pie mr-1"></i>
-                                        Sales
-                                    </h3>
-                                    <div class="card-tools">
-                                        <ul class="nav nav-pills ml-auto">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div><!-- /.card-header -->
-                                <div class="card-body">
-                                    <div class="tab-content p-0">
-                                        <!-- Morris chart - Sales -->
-                                        <div class="chart tab-pane active" id="revenue-chart"
-                                            style="position: relative; height: 300px;">
-                                            <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                        </div>
-                                        <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                                            <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                        </div>
-                                    </div>
-                                </div><!-- /.card-body -->
-                            </div>
-                            <!-- /.card -->
 
-                            <!-- DIRECT CHAT -->
-                            <div class="card direct-chat direct-chat-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Direct Chat</h3>
-
-                                    <div class="card-tools">
-                                        <span title="3 New Messages" class="badge badge-primary">3</span>
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
-                                            <i class="fas fa-comments"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <!-- Conversations are loaded here -->
-                                    <div class="direct-chat-messages">
-                                        <!-- Message. Default to the left -->
-                                        <div class="direct-chat-msg">
-                                            <div class="direct-chat-infos clearfix">
-                                                <span class="direct-chat-name float-left">Alexander Pierce</span>
-                                                <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200">
+                                    <th class="px-8 py-4 text-left text-sm font-bold text-gray-700">Nome</th>
+                                    <th class="px-8 py-4 text-left text-sm font-bold text-gray-700">Email</th>
+                                    <th class="px-8 py-4 text-left text-sm font-bold text-gray-700">Data de Cadastro</th>
+                                    <th class="px-8 py-4 text-left text-sm font-bold text-gray-700">Status</th>
+                                    <th class="px-8 py-4 text-left text-sm font-bold text-gray-700">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($ultimosUsuarios as $u): ?>
+                                    <tr class="table-row-hover border-b border-gray-100">
+                                        <td class="px-8 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-full gradient-green flex items-center justify-center text-white font-bold text-sm shadow-md">
+                                                    <?= strtoupper(substr($u['nome'], 0, 1)) ?>
+                                                </div>
+                                                <span class="font-semibold text-gray-900"><?= $u['nome'] ?></span>
                                             </div>
-                                            <!-- /.direct-chat-infos -->
-                                            <img class="direct-chat-img" src="<?= base_url('assets') ?>/dist/img/user1-128x128.jpg" alt="message user image">
-                                            <!-- /.direct-chat-img -->
-                                            <div class="direct-chat-text">
-                                                Is this template really for free? That's unbelievable!
+                                        </td>
+                                        <td class="px-8 py-4">
+                                            <span class="text-gray-600 text-sm"><?= $u['email'] ?></span>
+                                        </td>
+                                        <td class="px-8 py-4">
+                                            <span class="text-gray-600 text-sm"><?= date('d/m/Y', strtotime($u['criado_em'])) ?></span>
+                                        </td>
+                                        <td class="px-8 py-4">
+                                            <span class="badge badge-success">Ativo</span>
+                                        </td>
+                                        <td class="px-8 py-4">
+                                            <div class="flex gap-2">
+                                                <button class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Editar">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Deletar">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
-                                            <!-- /.direct-chat-text -->
-                                        </div>
-                                        <!-- /.direct-chat-msg -->
-
-                                        <!-- Message to the right -->
-                                        <div class="direct-chat-msg right">
-                                            <div class="direct-chat-infos clearfix">
-                                                <span class="direct-chat-name float-right">Sarah Bullock</span>
-                                                <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
-                                            </div>
-                                            <!-- /.direct-chat-infos -->
-                                            <img class="direct-chat-img" src="<?= base_url('assets') ?>/dist/img/user3-128x128.jpg" alt="message user image">
-                                            <!-- /.direct-chat-img -->
-                                            <div class="direct-chat-text">
-                                                You better believe it!
-                                            </div>
-                                            <!-- /.direct-chat-text -->
-                                        </div>
-                                        <!-- /.direct-chat-msg -->
-
-                                        <!-- Message. Default to the left -->
-                                        <div class="direct-chat-msg">
-                                            <div class="direct-chat-infos clearfix">
-                                                <span class="direct-chat-name float-left">Alexander Pierce</span>
-                                                <span class="direct-chat-timestamp float-right">23 Jan 5:37 pm</span>
-                                            </div>
-                                            <!-- /.direct-chat-infos -->
-                                            <img class="direct-chat-img" src="<?= base_url('assets') ?>/dist/img/user1-128x128.jpg" alt="message user image">
-                                            <!-- /.direct-chat-img -->
-                                            <div class="direct-chat-text">
-                                                Working with AdminLTE on a great new app! Wanna join?
-                                            </div>
-                                            <!-- /.direct-chat-text -->
-                                        </div>
-                                        <!-- /.direct-chat-msg -->
-
-                                        <!-- Message to the right -->
-                                        <div class="direct-chat-msg right">
-                                            <div class="direct-chat-infos clearfix">
-                                                <span class="direct-chat-name float-right">Sarah Bullock</span>
-                                                <span class="direct-chat-timestamp float-left">23 Jan 6:10 pm</span>
-                                            </div>
-                                            <!-- /.direct-chat-infos -->
-                                            <img class="direct-chat-img" src="<?= base_url('assets') ?>/dist/img/user3-128x128.jpg" alt="message user image">
-                                            <!-- /.direct-chat-img -->
-                                            <div class="direct-chat-text">
-                                                I would love to.
-                                            </div>
-                                            <!-- /.direct-chat-text -->
-                                        </div>
-                                        <!-- /.direct-chat-msg -->
-
-                                    </div>
-                                    <!--/.direct-chat-messages-->
-
-                                    <!-- Contacts are loaded here -->
-                                    <div class="direct-chat-contacts">
-                                        <ul class="contacts-list">
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user1-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            Count Dracula
-                                                            <small class="contacts-list-date float-right">2/28/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">How have you been? I was...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user7-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            Sarah Doe
-                                                            <small class="contacts-list-date float-right">2/23/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">I will be waiting for...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user3-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            Nadia Jolie
-                                                            <small class="contacts-list-date float-right">2/20/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">I'll call you back at...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user5-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            Nora S. Vans
-                                                            <small class="contacts-list-date float-right">2/10/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">Where is your new...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user6-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            John K.
-                                                            <small class="contacts-list-date float-right">1/27/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">Can I take a look at...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                            <li>
-                                                <a href="#">
-                                                    <img class="contacts-list-img" src="<?= base_url('assets') ?>/dist/img/user8-128x128.jpg" alt="User Avatar">
-
-                                                    <div class="contacts-list-info">
-                                                        <span class="contacts-list-name">
-                                                            Kenneth M.
-                                                            <small class="contacts-list-date float-right">1/4/2015</small>
-                                                        </span>
-                                                        <span class="contacts-list-msg">Never mind I found...</span>
-                                                    </div>
-                                                    <!-- /.contacts-list-info -->
-                                                </a>
-                                            </li>
-                                            <!-- End Contact Item -->
-                                        </ul>
-                                        <!-- /.contacts-list -->
-                                    </div>
-                                    <!-- /.direct-chat-pane -->
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer">
-                                    <form action="#" method="post">
-                                        <div class="input-group">
-                                            <input type="text" name="message" placeholder="Type Message ..." class="form-control">
-                                            <span class="input-group-append">
-                                                <button type="button" class="btn btn-primary">Send</button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- /.card-footer-->
-                            </div>
-                            <!--/.direct-chat -->
-
-                            <!-- TO DO List -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        <i class="ion ion-clipboard mr-1"></i>
-                                        To Do List
-                                    </h3>
-
-                                    <div class="card-tools">
-                                        <ul class="pagination pagination-sm">
-                                            <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
-                                            <li class="page-item"><a href="#" class="page-link">1</a></li>
-                                            <li class="page-item"><a href="#" class="page-link">2</a></li>
-                                            <li class="page-item"><a href="#" class="page-link">3</a></li>
-                                            <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <ul class="todo-list" data-widget="todo-list">
-                                        <li>
-                                            <!-- drag handle -->
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <!-- checkbox -->
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo1" id="todoCheck1">
-                                                <label for="todoCheck1"></label>
-                                            </div>
-                                            <!-- todo text -->
-                                            <span class="text">Design a nice theme</span>
-                                            <!-- Emphasis label -->
-                                            <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
-                                            <!-- General tools such as edit or delete-->
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo2" id="todoCheck2" checked>
-                                                <label for="todoCheck2"></label>
-                                            </div>
-                                            <span class="text">Make the theme responsive</span>
-                                            <small class="badge badge-info"><i class="far fa-clock"></i> 4 hours</small>
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo3" id="todoCheck3">
-                                                <label for="todoCheck3"></label>
-                                            </div>
-                                            <span class="text">Let theme shine like a star</span>
-                                            <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo4" id="todoCheck4">
-                                                <label for="todoCheck4"></label>
-                                            </div>
-                                            <span class="text">Let theme shine like a star</span>
-                                            <small class="badge badge-success"><i class="far fa-clock"></i> 3 days</small>
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo5" id="todoCheck5">
-                                                <label for="todoCheck5"></label>
-                                            </div>
-                                            <span class="text">Check your messages and notifications</span>
-                                            <small class="badge badge-primary"><i class="far fa-clock"></i> 1 week</small>
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <span class="handle">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </span>
-                                            <div class="icheck-primary d-inline ml-2">
-                                                <input type="checkbox" value="" name="todo6" id="todoCheck6">
-                                                <label for="todoCheck6"></label>
-                                            </div>
-                                            <span class="text">Let theme shine like a star</span>
-                                            <small class="badge badge-secondary"><i class="far fa-clock"></i> 1 month</small>
-                                            <div class="tools">
-                                                <i class="fas fa-edit"></i>
-                                                <i class="fas fa-trash-o"></i>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer clearfix">
-                                    <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add item</button>
-                                </div>
-                            </div>
-                            <!-- /.card -->
-                        </section>
-                        <!-- /.Left col -->
-                        <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                        <section class="col-lg-5 connectedSortable">
-
-                            <!-- Map card -->
-                            <div class="card bg-gradient-primary">
-                                <div class="card-header border-0">
-                                    <h3 class="card-title">
-                                        <i class="fas fa-map-marker-alt mr-1"></i>
-                                        Visitors
-                                    </h3>
-                                    <!-- card tools -->
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-primary btn-sm daterange" title="Date range">
-                                            <i class="far fa-calendar-alt"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <!-- /.card-tools -->
-                                </div>
-                                <div class="card-body">
-                                    <div id="world-map" style="height: 250px; width: 100%;"></div>
-                                </div>
-                                <!-- /.card-body-->
-                                <div class="card-footer bg-transparent">
-                                    <div class="row">
-                                        <div class="col-4 text-center">
-                                            <div id="sparkline-1"></div>
-                                            <div class="text-white">Visitors</div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <div class="col-4 text-center">
-                                            <div id="sparkline-2"></div>
-                                            <div class="text-white">Online</div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <div class="col-4 text-center">
-                                            <div id="sparkline-3"></div>
-                                            <div class="text-white">Sales</div>
-                                        </div>
-                                        <!-- ./col -->
-                                    </div>
-                                    <!-- /.row -->
-                                </div>
-                            </div>
-                            <!-- /.card -->
-
-                            <!-- solid sales graph -->
-                            <div class="card bg-gradient-info">
-                                <div class="card-header border-0">
-                                    <h3 class="card-title">
-                                        <i class="fas fa-th mr-1"></i>
-                                        Sales Graph
-                                    </h3>
-
-                                    <div class="card-tools">
-                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <canvas class="chart" id="line-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer bg-transparent">
-                                    <div class="row">
-                                        <div class="col-4 text-center">
-                                            <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
-                                                data-fgColor="#39CCCC">
-
-                                            <div class="text-white">Mail-Orders</div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <div class="col-4 text-center">
-                                            <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
-                                                data-fgColor="#39CCCC">
-
-                                            <div class="text-white">Online</div>
-                                        </div>
-                                        <!-- ./col -->
-                                        <div class="col-4 text-center">
-                                            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                                                data-fgColor="#39CCCC">
-
-                                            <div class="text-white">In-Store</div>
-                                        </div>
-                                        <!-- ./col -->
-                                    </div>
-                                    <!-- /.row -->
-                                </div>
-                                <!-- /.card-footer -->
-                            </div>
-                            <!-- /.card -->
-
-                            <!-- Calendar -->
-                            <div class="card bg-gradient-success">
-                                <div class="card-header border-0">
-
-                                    <h3 class="card-title">
-                                        <i class="far fa-calendar-alt"></i>
-                                        Calendar
-                                    </h3>
-                                    <!-- tools card -->
-                                    <div class="card-tools">
-                                        <!-- button with a dropdown -->
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
-                                                <i class="fas fa-bars"></i>
-                                            </button>
-                                            <div class="dropdown-menu" role="menu">
-                                                <a href="#" class="dropdown-item">Add new event</a>
-                                                <a href="#" class="dropdown-item">Clear events</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a href="#" class="dropdown-item">View calendar</a>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                    <!-- /. tools -->
-                                </div>
-                                <!-- /.card-header -->
-                                <div class="card-body pt-0">
-                                    <!--The calendar -->
-                                    <div id="calendar" style="width: 100%"></div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <!-- /.card -->
-                        </section>
-                        <!-- right col -->
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- /.row (main row) -->
-                </div><!-- /.container-fluid -->
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-            All rights reserved.
-            <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 3.2.0
-            </div>
-        </footer>
 
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
+                    <div class="px-8 py-6 bg-gray-50 border-t border-gray-200">
+                        <p class="text-sm text-gray-600">Mostrando <strong><?= count($ultimosUsuarios) ?></strong> de <strong><?= $totalUsuarios ?></strong> usuários</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
-    <!-- ./wrapper -->
 
-    <!-- jQuery -->
-    <script src="<?= base_url('assets') ?>/plugins/jquery/jquery.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="<?= base_url('assets') ?>/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-        $.widget.bridge('uibutton', $.ui.button)
+        // Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Fechar sidebar ao clicar em um link
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+            });
+        });
+
+        // Gráfico
+        const ctx = document.getElementById('graficoUsuarios')?.getContext('2d');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+                    datasets: [
+                        {
+                            label: 'Usuários',
+                            data: [12, 19, 8, 15, 22, 28, 35],
+                            borderColor: '#22c55e',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#22c55e',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 3,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Receitas',
+                            data: [8, 15, 12, 18, 14, 20, 25],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 3,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Alimentos',
+                            data: [5, 10, 15, 12, 18, 16, 22],
+                            borderColor: '#a855f7',
+                            backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#a855f7',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 3,
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#6b7280'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: '#e5e7eb',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
-    <!-- Bootstrap 4 -->
-    <script src="<?= base_url('assets') ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- ChartJS -->
-    <script src="<?= base_url('assets') ?>/plugins/chart.js/Chart.min.js"></script>
-    <!-- Sparkline -->
-    <script src="<?= base_url('assets') ?>/plugins/sparklines/sparkline.js"></script>
-    <!-- JQVMap -->
-    <script src="<?= base_url('assets') ?>/plugins/jqvmap/jquery.vmap.min.js"></script>
-    <script src="<?= base_url('assets') ?>/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="<?= base_url('assets') ?>/plugins/jquery-knob/jquery.knob.min.js"></script>
-    <!-- daterangepicker -->
-    <script src="<?= base_url('assets') ?>/plugins/moment/moment.min.js"></script>
-    <script src="<?= base_url('assets') ?>/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="<?= base_url('assets') ?>/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Summernote -->
-    <script src="<?= base_url('assets') ?>/plugins/summernote/summernote-bs4.min.js"></script>
-    <!-- overlayScrollbars -->
-    <script src="<?= base_url('assets') ?>/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="<?= base_url('assets') ?>/dist/js/adminlte.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="<?= base_url('assets') ?>/dist/js/demo.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="<?= base_url('assets') ?>/dist/js/pages/dashboard.js"></script>
+
 </body>
 
 </html>
