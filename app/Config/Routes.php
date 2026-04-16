@@ -42,4 +42,5 @@ $routes->group('admin', static function ($routes) {
     $routes->get('usuarios', 'Admin::usuarios');
     $routes->get('usuarios/editar/(:num)', 'Admin::editarUsuario/$1');
     $routes->post('usuarios/atualizar/(:num)', 'Admin::atualizarUsuario/$1');
+    $routes->get('receitas', 'Admin::receitas');
 });

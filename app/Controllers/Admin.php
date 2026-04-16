@@ -24,6 +24,17 @@ class Admin extends BaseController
         return view('admin/index', $data);
     }
 
+
+    public function receitas()
+    {
+        $receitas = new RecipeModel();
+        $data = [
+            "receitas" => $receitas->orderBy('criado_em', 'DESC')->findAll(),
+        ];
+
+        return view('admin/alimentos/receita/index', $data);
+    }
+
     public function usuarios()
     {
         $userModel = new UserModel();
