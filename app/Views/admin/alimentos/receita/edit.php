@@ -392,7 +392,8 @@
                         </a>
                         <div>
                             <h1 class="text-4xl font-bold text-gray-900">
-                                <?= isset($receita['id']) ? 'Editar Receita' : 'Nova Receita' ?></h1>
+                                <?= isset($receita['id']) ? 'Editar Receita' : 'Nova Receita' ?>
+                            </h1>
                             <p class="text-gray-500 text-sm mt-1">Gerencie os detalhes e ingredientes</p>
                         </div>
                     </div>
@@ -448,51 +449,54 @@
                                 <div class="mb-8">
                                     <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Foto da Receita</h3>
 
-                                    <div class="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50 flex flex-col items-center justify-center overflow-hidden transition-all hover:bg-gray-100 hover:border-green-400 group"
+                                    <div class="relative w-full h-64 rounded-2xl overflow-hidden group border-2 border-gray-200 shadow-sm"
                                         id="upload-zone">
 
-                                        <input type="file" name="imagem" id="imagem-input"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                        <input type="file" name="imagem" id="imagem-input" class="hidden"
                                             accept="image/*" onchange="previewImage(event)">
 
                                         <input type="hidden" name="remover_imagem" id="remover-imagem-flag" value="0">
 
-                                        <div id="upload-placeholder"
-                                            class="text-center <?= !empty($receita['imagem']) ? 'hidden' : '' ?>">
-                                            <div
-                                                class="mx-auto h-12 w-12 text-gray-400 mb-3 group-hover:text-green-500 transition-colors">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <?php
+                                        $temFoto = !empty($receita['imagem']);
+                                        // Certifique-se de ter uma imagem chamada 'no_photo.png' nesta pasta!
+                                        $imgPadrao = base_url('assets/img/preview/no_photo.png');
+                                        $imgAtual = $temFoto ? base_url('assets/img/recipes/' . $receita['imagem']) : $imgPadrao;
+                                        ?>
+
+                                        <img id="image-preview" src="<?= $imgAtual ?>"
+                                            data-default-src="<?= $imgPadrao ?>"
+                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                                        <div
+                                            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+
+                                            <button type="button"
+                                                onclick="document.getElementById('imagem-input').click()"
+                                                class="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition flex items-center gap-2 shadow-lg transform hover:-translate-y-0.5">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
-                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z">
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                                                     </path>
                                                 </svg>
-                                            </div>
-                                            <span class="text-sm font-medium text-gray-600">Clique ou arraste uma foto
-                                                aqui</span>
-                                            <p class="text-xs text-gray-400 mt-1">PNG, JPG ou WEBP até 2MB</p>
-                                        </div>
+                                                <span
+                                                    id="btn-text-update"><?= $temFoto ? 'Atualizar Foto' : 'Adicionar Foto' ?></span>
+                                            </button>
 
-                                        <div id="image-preview-container"
-                                            class="absolute inset-0 w-full h-full <?= empty($receita['imagem']) ? 'hidden' : '' ?> z-10 bg-black">
-                                            <img id="image-preview"
-                                                src="<?= !empty($receita['imagem']) ? base_url('assets/img/recipes/' . $receita['imagem']) : '' ?>"
-                                                class="w-full h-full object-cover opacity-90 group-hover:opacity-50 transition-opacity">
+                                            <button type="button" id="btn-remove-photo" onclick="removeImage(event)"
+                                                class="px-5 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition flex items-center gap-2 shadow-lg transform hover:-translate-y-0.5 <?= $temFoto ? '' : 'hidden' ?>">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    </path>
+                                                </svg>
+                                                Remover
+                                            </button>
 
-                                            <div
-                                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button type="button" onclick="removeImage(event)"
-                                                    class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition flex items-center gap-2 z-30 shadow-lg">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                        </path>
-                                                    </svg>
-                                                    Remover Foto
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -622,23 +626,27 @@
             }
         }
         // --- Lógica de Upload de Imagem --- //
+
+// --- Lógica de Upload e Remoção de Imagem --- //
         
         function previewImage(event) {
             const input = event.target;
-            const previewContainer = document.getElementById('image-preview-container');
             const previewImage = document.getElementById('image-preview');
-            const placeholder = document.getElementById('upload-placeholder');
             const removeFlag = document.getElementById('remover-imagem-flag');
+            const btnRemove = document.getElementById('btn-remove-photo');
+            const btnTextUpdate = document.getElementById('btn-text-update');
 
-            // Se o usuário selecionou um arquivo
+            // Se o usuário selecionou uma nova foto no PC
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
-                    previewImage.src = e.target.result; // Coloca a base64 na tag <img>
-                    previewContainer.classList.remove('hidden'); // Mostra a foto
-                    placeholder.classList.add('hidden'); // Esconde o ícone de nuvem
-                    removeFlag.value = '0'; // Avisa o PHP que NÃO é pra deletar a foto
+                    previewImage.src = e.target.result; // Mostra a foto nova
+                    removeFlag.value = '0'; // Avisa o PHP que NÃO é pra deletar
+                    
+                    // Altera os botões dinamicamente
+                    btnRemove.classList.remove('hidden'); // Mostra o botão de remover
+                    btnTextUpdate.innerText = 'Atualizar Foto'; // Muda o texto
                 }
                 
                 reader.readAsDataURL(input.files[0]);
@@ -646,23 +654,25 @@
         }
 
         function removeImage(event) {
-            event.preventDefault(); // Evita enviar o formulário sem querer
-            event.stopPropagation(); // Evita abrir a janela do Windows de escolher arquivo
+            event.preventDefault(); 
+            event.stopPropagation(); 
 
             const input = document.getElementById('imagem-input');
-            const previewContainer = document.getElementById('image-preview-container');
             const previewImage = document.getElementById('image-preview');
-            const placeholder = document.getElementById('upload-placeholder');
             const removeFlag = document.getElementById('remover-imagem-flag');
+            const btnRemove = document.getElementById('btn-remove-photo');
+            const btnTextUpdate = document.getElementById('btn-text-update');
 
-            input.value = ''; // Limpa o input file
-            previewImage.src = ''; // Limpa a imagem atual
-            
-            previewContainer.classList.add('hidden'); // Esconde o preview
-            placeholder.classList.remove('hidden'); // Volta a mostrar a nuvem de upload
-            
-            // MUITO IMPORTANTE: Avisa o PHP para deletar a foto antiga do servidor e do banco de dados!
+            // Limpa o input file e seta a flag para '1' (Avisa o PHP para deletar)
+            input.value = ''; 
             removeFlag.value = '1'; 
+            
+            // Puxa a URL da imagem 'no_photo' que deixamos salva no data-attribute do HTML
+            previewImage.src = previewImage.getAttribute('data-default-src');
+            
+            // Altera os botões dinamicamente
+            btnRemove.classList.add('hidden'); // Esconde o botão de remover
+            btnTextUpdate.innerText = 'Adicionar Foto'; // Volta o texto para Adicionar
         }
     </script>
 </body>
